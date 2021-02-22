@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using support_chat.Models;
+using TechnicalSupport.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace support_chat.Controllers
+namespace TechnicalSupport.Controllers
 {
     public class HomeController : Controller
     {

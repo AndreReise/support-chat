@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace support_chat
+namespace TechnicalSupport
 {
     public class Program
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace support_chat.Models
+namespace TechnicalSupport.Models
 {
     public class ErrorViewModel
     {

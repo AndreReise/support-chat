@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer  
+
+@model TechnicalSupport.Utils.AuthModel
+
+
+<form asp-controller="Account" asp-action="Login">
+    <div class="form-group">
+        <label asp-for="UserString">@Localizer["UserString"]</label>
+        <input asp-for="UserString"/>
+        <span asp-validation-for="UserString"/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password">@Localizer["Password"]</label>
+        <input asp-for="Password"/>
+        <span asp-validation-for="Password"/>
+    </div>
+
+    <div class="form-group">
+        <input type="submit">
+    </div>
+
+</form>
