@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "h3zOBceJmksRwJFk3LPvmAFCDoD+651B2fT4dVX+fanpGRPmd1Df6UCZvCRv1CX7D9h4h1SjU6nrhRmdssDsYw==",
+  "dgSpecHash": "hvFEofT0S2FM/MbjZB/qC4Ur8PlHaEcxPdh2sl1IFyd2cUn4EFdc+j5DrIXY72SgEq4tjm66EXuuwhC7eSwKWQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lv\\Documents\\Kraken\\Support-Chat\\support-chat\\TechnicalSupport\\TechnicalSupport.csproj",
   "expectedPackageFiles": [
@@ -33,9 +33,9 @@
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.data.sqlclient\\2.0.1\\microsoft.data.sqlclient.2.0.1.nupkg.sha512",
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.0.1\\microsoft.data.sqlclient.sni.runtime.2.0.1.nupkg.sha512",
-    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.2\\microsoft.entityframeworkcore.5.0.2.nupkg.sha512",
-    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.2\\microsoft.entityframeworkcore.abstractions.5.0.2.nupkg.sha512",
-    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\5.0.2\\microsoft.entityframeworkcore.analyzers.5.0.2.nupkg.sha512",
+    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.3\\microsoft.entityframeworkcore.5.0.3.nupkg.sha512",
+    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.3\\microsoft.entityframeworkcore.abstractions.5.0.3.nupkg.sha512",
+    "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\5.0.3\\microsoft.entityframeworkcore.analyzers.5.0.3.nupkg.sha512",
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.design\\5.0.2\\microsoft.entityframeworkcore.design.5.0.2.nupkg.sha512",
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\5.0.2\\microsoft.entityframeworkcore.relational.5.0.2.nupkg.sha512",
     "C:\\Users\\Lv\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\5.0.2\\microsoft.entityframeworkcore.sqlserver.5.0.2.nupkg.sha512",

@@ -13,7 +13,7 @@ using TechnicalSupport.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using TechnicalSupport.Models;
-//using Microsoft.AspNet.SignalR;
+
 
 namespace TechnicalSupport
 {
@@ -33,9 +33,8 @@ namespace TechnicalSupport
         public void ConfigureServices(IServiceCollection services)
         {
 
-            //string connection = "Server=(localdb)\\mssqllocaldb;Database=authsignalrappdb;Trusted_Connection=True;";
+           
             string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SupportChat;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
 
             services.AddDbContext<ChatContext>(options => options.UseSqlServer(connection),
                  ServiceLifetime.Singleton
@@ -48,21 +47,12 @@ namespace TechnicalSupport
                 using (var scope = sp.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetService<ChatContext>();
-                    //  var dbContext = serviceProvider.GetRequiredService<ChatContext>();
-
-                    //   return ActivatorUtilities.CreateInstance<CustomUserIdProvider>(serviceProvider);
                     return new CustomUserIdProvider(dbContext);
                 }
             }
-
-                
                 );
 
             services.AddSingleton<AutoDialog>();
-
-
-
-
 
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
