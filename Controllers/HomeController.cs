@@ -1,26 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using TechnicalSupport.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TechnicalSupport.Data;
+using TechnicalSupport.Models;
 
 namespace TechnicalSupport.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public static ChatContext _context;
+       
+        public static Dictionary<string, string> useremail;
+        public HomeController( IHubContext<MessageHub> hubContext)
         {
-            _logger = logger;
+     //       _context = context;
+
         }
 
         public IActionResult Index()
         {
             return View();
+
+           // return RedirectToAction("Index", "Account");
+
         }
 
         public IActionResult Privacy()

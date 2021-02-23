@@ -39,9 +39,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.PasswordHash)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SexNavigation)
-            </th>
+         
             <th></th>
         </tr>
     </thead>
@@ -75,9 +73,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PasswordHash)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SexNavigation.Sex1)
-            </td>
+         
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ClientId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ClientId">Details</a> |

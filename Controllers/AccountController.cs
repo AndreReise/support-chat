@@ -1,48 +1,116 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TechnicalSupport.Data;
-using TechnicalSupport.Services;
-using TechnicalSupport.Utils;
+using TechnicalSupport.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 
 namespace TechnicalSupport.Controllers
 {
-
-    [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly SupportContext _db;
-        private readonly IAuthService _authService;
 
-        public AccountController(SupportContext db , IAuthService authService)
+
+        public static ChatContext _context;
+        private readonly IHubContext<MessageHub> _hubContext;
+
+
+        public AccountController(ChatContext context, IHubContext<MessageHub> hubContext)
         {
-            _db = db;
-            _authService = authService;
+            _context = context;
+            _hubContext = hubContext;
+
         }
 
-        [Authorize]
+       
+
         public IActionResult Index()
         {
+      
+
+       
             return View();
         }
-
-
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
+        
+
             return View();
         }
-
-
-        
         [HttpPost]
-        public async Task<IActionResult> Login(AuthModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginModel model)
         {
-            _authService.AuthenticateUserAsync(model);
-            return Ok();
+
+          
+            if (ModelState.IsValid)
+            {
+                Employee employ = await _context.Employees
+                    .Include(u => u.Role)
+                    .SingleOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                if (employ != null)
+                {
+                    User userlogin = new User() {Email = employ.Email, Password=employ.Password, Role=employ.Role, RoleId=employ.RoleId, Id=employ.Id };
+                    await Authenticate(userlogin); // аутентификация
+
+                  
+                    // to get current user ID
+
+                    return RedirectToAction("Index", "Account");// переадресация на метод Index
+                }
+                User user = await _context.Users
+                    .Include(u => u.Role)
+                    .SingleOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                if (user != null)
+                {
+                    await Authenticate(user); // аутентификация
+
+
+                    // to get current user ID
+
+                    return RedirectToAction("Index", "Account");// переадресация на метод Index
+                }
+
+
+
+
+
+                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+            }
+            return View(model);
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+        private async Task Authenticate(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
+               
+            };
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+
+           
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }
 }
+
+
+
+
+
+

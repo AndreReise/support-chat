@@ -12,7 +12,7 @@ namespace TechnicalSupport.Models
             Employees = new HashSet<Employee>();
         }
 
-        public int WorkTimeId { get; set; }
+        public int Id { get; set; }
         public TimeSpan From { get; set; }
         public TimeSpan To { get; set; }
 

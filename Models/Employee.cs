@@ -1,37 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
-#nullable disable
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TechnicalSupport.Models
 {
-    public partial class Employee
+    public class Employee
     {
-        public Employee()
-        {
-            Tasks = new HashSet<EmployeeTask>();
-        }
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Name { get; set; }
+     
+        public bool StatusOnline { get; set; }
 
-        public int EmployeeId { get; set; }
+        public int? RoleId { get; set; }
+        public Role Role { get; set; }
+
+
+
+
+
+      
+      
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string SecondName { get; set; }
         public int? Age { get; set; }
         public string Phone { get; set; }
-        public string Email { get; set; }
-        public int Sex { get; set; }
+     
+        public int SexId { get; set; }
         public int WorkTime { get; set; }
-        
-        [Display(Name = "Password")]
-        public byte[] PasswordHash { get; set; }
-        public byte[] LocalHash { get; set; }
+
+      //  [Display(Name = "Password")]
 
 
-        public Guid EmployeeGuid { get; set; }
-
-        public virtual Sex SexNavigation { get; set; }
+    
         public virtual WorkTime WorkTimeNavigation { get; set; }
         public virtual ICollection<EmployeeTask> Tasks { get; set; }
+
+
+
+
     }
 }
