@@ -6,11 +6,8 @@
     <title>@ViewData["Title"] - TechnicalSupport</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/_chat.css" />
     <script src=@Url.Content("~/lib/aspnet/signalr/dist/browser/signalr.js")></script>
-    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
-    <link href="~/css/Employee.css" rel="stylesheet" />
-</head>
+</head>                       
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -26,19 +23,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Empl</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Account Admin</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Account</a>
                         </li>
                     </ul>
                 </div>
@@ -47,38 +35,20 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            <button onclick="ToggleChat()" id="ChatOpenButton" title="Open Chat"> <i class="fa fa-comments"></i></button>
-        </main>
-    </div>
-    <div class="container">
-        <main role="main" class="pb-3">
             @RenderBody()
-
-
-
-
-            <div class="user-chat-container" id="user-chat-container">
-                @await Html.PartialAsync("_Chat")
-            </div>
         </main>
     </div>
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - TechnicalSupport
-            <div class="footer-icon">
-                <ul>
-                    <li><a title="Telegram" href="tg://resolve?domain=yuhim93"> </a></li>
-                    <li><a title="Telegram" href="tg://resolve?domain=yuhim93">  </a></li>
-                    <li><a title="Telegram" href="tg://resolve?domain=yuhim93">  </a></li>
-                </ul>
-            </div>
+
+            @*<a title="Telegram" href="tg://resolve?domain=TegName"> <img src="~/Icons/Footer/telegram.png" alt="Telegram" />  </a>*@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
-    <script src="~/js/User.js"></script>
-    <script src="~/js/_chatUser.js"></script>
 </body>
 </html>
