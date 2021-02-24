@@ -32,7 +32,7 @@ namespace TechnicalSupport
         public void ConfigureServices(IServiceCollection services)
         {
             //for local testing
-            services.AddDbContext<SupportContext>(options =>
+            services.AddDbContext<ChatContext>(options =>
             options.UseSqlServer("Data Source=.;Initial Catalog=chat_db;Integrated Security=True"));
 
             //services.AddDbContext<SupportContext>(options =>
@@ -48,7 +48,7 @@ namespace TechnicalSupport
 
             services.AddScoped<IAuthService, AuthService>( (options) =>
                 new AuthService(
-                    options.GetRequiredService<SupportContext>(),
+                    options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
                     options.GetRequiredService<IHttpContextAccessor>()
                     )

@@ -17,11 +17,11 @@ namespace TechnicalSupport.Services
 
     public class AuthService : IAuthService
     {
-        private SupportContext _db;
+        private ChatContext _db;
         private readonly CryptoProvider _cryProvider;
         private readonly IHttpContextAccessor _contextAcessor;
         private AuthStatusResult _authResult;
-        public AuthService(SupportContext dbContext , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
+        public AuthService(ChatContext dbContext , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
         {
             _db = dbContext;
             _cryProvider = (CryptoProvider)cryptoProvider;

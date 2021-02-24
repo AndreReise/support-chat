@@ -9,13 +9,13 @@ using System.Configuration;
 
 namespace TechnicalSupport.Data
 {
-    public partial class SupportContext : DbContext
+    public partial class ChatContext : DbContext
     {
         //public GL_SupportContext()
         //{
         //}
 
-        public SupportContext(DbContextOptions<SupportContext> options)
+        public ChatContext(DbContextOptions<ChatContext> options)
             : base(options)
         {
         }

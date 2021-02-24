@@ -14,10 +14,10 @@ namespace TechnicalSupport.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly SupportContext _db;
+        private readonly ChatContext _db;
         private readonly IAuthService _authService;
 
-        public AccountController(SupportContext db , IAuthService authService)
+        public AccountController(ChatContext db , IAuthService authService)
         {
             _db = db;
             _authService = authService;
