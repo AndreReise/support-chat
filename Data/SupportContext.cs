@@ -143,9 +143,6 @@ namespace TechnicalSupport.Data
 
                 entity.Property(e => e.LastName).HasMaxLength(100);
 
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired()
-                    .HasMaxLength(64);
 
                 entity.Property(e => e.Phone).HasMaxLength(22);
 
@@ -222,8 +219,6 @@ namespace TechnicalSupport.Data
                 entity.Property(e => e.FirstName).HasMaxLength(100);
 
                 entity.Property(e => e.LastName).HasMaxLength(100);
-
-                entity.Property(e => e.PasswordHash).HasMaxLength(64);
 
                 entity.Property(e => e.Phone).HasMaxLength(22);
 

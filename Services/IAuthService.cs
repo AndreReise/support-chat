@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TechnicalSupport.Models;
 using TechnicalSupport.Utils;
 
 namespace TechnicalSupport.Services
@@ -10,7 +12,7 @@ namespace TechnicalSupport.Services
     {
        Task AuthenticateUserAsync(AuthModel model);
 
-        Task SignOutAsync();
+       Task SignOutAsync();
 
     }
 }

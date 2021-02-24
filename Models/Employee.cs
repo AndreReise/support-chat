@@ -22,12 +22,6 @@ namespace TechnicalSupport.Models
         public string Email { get; set; }
         public int Sex { get; set; }
         public int WorkTime { get; set; }
-        
-        [Display(Name = "Password")]
-        public byte[] PasswordHash { get; set; }
-        public byte[] LocalHash { get; set; }
-
-
         public Guid EmployeeGuid { get; set; }
 
         public virtual Sex SexNavigation { get; set; }

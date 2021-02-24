@@ -9,130 +9,123 @@ using TechnicalSupport.Data;
 using TechnicalSupport.Models;
 using TechnicalSupport.Utils;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using support_chat.Utils;
 
 namespace TechnicalSupport.Services
 {
+
     public class AuthService : IAuthService
     {
         private SupportContext _db;
         private readonly CryptoProvider _cryProvider;
         private readonly IHttpContextAccessor _contextAcessor;
+        private AuthStatusResult _authResult;
         public AuthService(SupportContext dbContext , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
         {
             _db = dbContext;
             _cryProvider = (CryptoProvider)cryptoProvider;
             _contextAcessor = contextAccessor;
+            _authResult = new AuthStatusResult();
 
         }
-
 
         public Task AuthenticateUserAsync(AuthModel model)
         {
-
             return Task.Run(() => AuthenticateUser(model));
-
-        }
-        public Task SignOutAsync()
-        {
-            return Task.Run(() => SignOut());
         }
 
         private async Task AuthenticateUser(AuthModel model)
         {
-            var user = _db.Users.SingleOrDefault(x => x.Email == model.UserString || x.Phone == model.UserString);
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.Phone == model.UserString || x.Email == model.UserString);
 
-            List<Claim> userClaims;
-
-            if (user != null)
+            if(user == null)
             {
-                userClaims = user.RoleName == 1
-                    ? userClaims = CreateClientClaims( await VerifyClient(user, model.Password))
-                    : userClaims = CreateEmployeeClaims (await VerifyEmployee(user , model.Password));
-
-                var id = new ClaimsIdentity(userClaims, "ApplicaionCookie");
-                var claimsPrincipal = new ClaimsPrincipal(id);
-
-                await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, claimsPrincipal);
                 
-            }
-            else
-            {
-                //change !!!
-                
+                return;
             }
 
+            List<Claim> userClaims = await VerifyUserAsync(user);
+
+            if(userClaims == null)
+            {
+                _authResult.ErrorMessage = "Wrong Credentials";
+                _authResult.isSuccessful = false;
+
+                return;
+            }
+
+            var u_id = new ClaimsIdentity(userClaims, "ApplicationCookie");
+            var claimsPrincipal = new ClaimsPrincipal(u_id);
+
+            await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, claimsPrincipal);
         }
 
-        private async Task SignOut()
-        {
-            await AuthenticationHttpContextExtensions.SignOutAsync(_contextAcessor.HttpContext);
-        }
-        private async Task<object> VerifyClient(User user , string password)
-        {
-            var client = await _db.Clients.SingleOrDefaultAsync(
-                x => x.ClientId == user.RoleId);
 
-            if (isCorrectPassword(password, client.PasswordHash, client.LocalHash))
-            {
-                return client;
-            }
-            else
-            {
-                return new 
-                {
-                    ErrorMessage = "Wrong Credentials"
-                };
-            }
+        private Task< List<Claim> > VerifyUserAsync(User user)
+        {
+            return Task.Run(() => VerifyUser(user));
         }
 
-        private async Task<object> VerifyEmployee(User user , string password)
+
+        private async Task< List<Claim>> VerifyUser(User user)
         {
-            var employee = await _db.Employees.SingleOrDefaultAsync(
-                x => x.EmployeeId == user.RoleId
-                );
-
-            if(isCorrectPassword(password , employee.PasswordHash , employee.LocalHash)){
-
-                return employee;
-
-            }
-            else
+            switch (user.RoleName)
             {
-                return new
-                {
-                    ErrorMessage = "Wrong Credentials"
-                };
+                case 1:
+                    return await CreateClientClaims(user);
+                    break;
+                case 2:
+                    return await CreateEmployeeClaims(user);
+                    break;
+                default:
+                    return null;
+                    break;
             }
         }
 
-        private List<Claim> CreateClientClaims(object clientObject)
-        {
-            Client client = (Client)clientObject;
 
-            var claims = new List<Claim> {
-                new Claim(ClaimsIdentity.DefaultNameClaimType , client.FirstName),
-                new Claim(ClaimTypes.Role, nameof(Client).ToUpper() ),
+        private async Task<List<Claim>> CreateClientClaims(User user)
+        {
+            var client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == user.RoleId);
+
+            if(client == null)
+            {
+                ///logic 
+                ///
+                return null;
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType , client.FirstName + client.LastName),
+                new Claim(ClaimTypes.Role , nameof(client).ToUpper())
             };
 
             return claims;
         }
-        private List<Claim> CreateEmployeeClaims(object employeeObject)
+        private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            Employee employee = (Employee)employeeObject;
+            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == user.RoleId);
 
-            var claims = new List<Claim> {
-                new Claim(ClaimsIdentity.DefaultNameClaimType , employee.FirstName),
-                new Claim(ClaimTypes.Role, nameof(Employee).ToUpper())
+            if(employee == null)
+            {
+                //logic 
+
+                return null;
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType , employee.FirstName + employee.LastName),
+                new Claim(ClaimTypes.Role , nameof(employee).ToUpper())
             };
 
             return claims;
         }
-        private bool  isCorrectPassword(string password , byte[] dbPassword, byte[] l_hash)
+        public Task SignOutAsync()
         {
-            byte[] passwordHash = _cryProvider.GetPasswordHash(password, l_hash);
-
-            return passwordHash.SequenceEqual(dbPassword);
+            throw new NotImplementedException();
         }
-        
     }
 }

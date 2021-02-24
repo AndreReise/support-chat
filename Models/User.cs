@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,5 +14,10 @@ namespace TechnicalSupport.Models
 
         public string Email { get; set; }
         public string Phone { get; set; }
+
+
+        [Display(Name = "Password")]
+        public byte[] PasswordHash { get; set; }
+        public byte[] LocalHash { get; set; }
     }
 }
