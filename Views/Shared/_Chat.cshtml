@@ -44,7 +44,7 @@
     <span class="minimizeChat">&#128469;</span>
 </div>
 
-<div class="chat-messages">
+<div class="chat-messages" id="chat-messages">
     <div class="chat first">
         <i class="fas fa-users"></i>
         <span class="name">Name</span>
@@ -90,3 +90,90 @@
         </div>*@
 
 </div>
+
+
+<script>
+
+  
+  
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+  
+    hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10; // 1 second * 60 * 10 = 10 minutes.
+
+    let userName = "";
+  
+    // получение сообщения от сервера
+    hubConnection.on("Receive", function (mes) {
+
+
+        let servmessage = document.createElement("div");
+
+        if (mes.senderType == "in") {
+
+            servmessage.className = "chat first";
+        }
+        else {
+
+            servmessage.className = "chat second";
+
+        }
+
+      
+
+      
+        servmessage.appendChild(document.createTextNode('Name:' + mes.dialogId));
+        // создает элемент <p> для сообщения пользователя
+        let elem = document.createElement("p");
+        elem.appendChild(document.createTextNode(mes.text));
+        servmessage.appendChild(elem);
+
+      
+     
+
+
+        var firstElem = document.getElementById("chat-messages").firstChild;
+        document.getElementById("chat-messages").insertBefore(servmessage, firstElem);
+
+    });
+    hubConnection.serverTimeoutInMilliseconds = 100000; // 100 second
+
+
+    hubConnection.onreconnecting((error) => {
+        const status = `Connection lost due to error "${error}". Reconnecting.`;
+        document.getElementById("messageInput").disabled = true;
+        document.getElementById("sendButton").disabled = true;
+        document.getElementById("connectionStatus").innerText = status;
+    });
+
+    hubConnection.onreconnected((connectionId) => {
+        const status = `Connection reestablished. Connected.`;
+        document.getElementById("messageInput").disabled = false;
+        document.getElementById("sendButton").disabled = false;
+        document.getElementById("connectionStatus").innerText = status;
+    });
+
+    hubConnection.onclose((error) => {
+       hubConnection.start();
+        console.error(`Something went wrong: ${error}`);
+    });
+
+
+
+  
+        // отправка сообщения от простого пользователя
+       
+
+    document.getElementById("chat-submit").addEventListener("click", function(e) {
+            let text = document.getElementById("chat-input").value;
+        hubConnection.invoke("SendTechnical", { "Text": text, "Name": text, "SenderType": "in" });
+        });
+  
+    
+    hubConnection.start();
+</script>

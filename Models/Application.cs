@@ -12,7 +12,7 @@ namespace TechnicalSupport.Models
         public int Chat { get; set; }
         public int Status { get; set; }
 
-        public virtual Chat ChatNavigation { get; set; }
+     
         public virtual Status StatusNavigation { get; set; }
     }
 }
