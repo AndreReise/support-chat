@@ -13,7 +13,7 @@ namespace TechnicalSupport.Models
         public string Name { get; set; }
 
         public string SenderType {get; set;}
-
+        public string TextTupe { get; set; }
         public string RedirectTo { get; set; }
         public Guid ClientId { set; get; }
         public Guid DialogId { get; set; }

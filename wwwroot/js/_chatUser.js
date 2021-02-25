@@ -59,9 +59,13 @@ function RegisterInput() {
         }
         addMessage(msg, 'first','username','sometimes');
 
-        setTimeout(function () {
-            addMessage(msg, 'second', 'connectedSpecName','tooLate');
-        }, 1000);
+        SwapChatPanel();
+        AddBtn("asdasd");
+        AddBtn("back to chat", "btn-success");
+
+        //setTimeout(function () {
+        //    addMessage(msg, 'second', 'connectedSpecName','tooLate');
+        //}, 1000);
 
     });
     $("#chat-input").keyup("keyup", function (event) {
@@ -95,12 +99,37 @@ function addMessage(msg, type, name, time) {
         $("#chat-input").val('');
     }
     $(".chat-messages").stop().animate({ scrollTop: $(".chat-messages")[0].scrollHeight }, 1000);
-
 }
+
+function SwapChatPanel() {
+    $(".chat-input").toggle();
+    $(".chat-button-container").toggle();
+}
+
 
 function SetReasone(elem) {
     //console.dir(elem.dataset.reason);
     user.Reasone = elem.dataset.reason; 
     //console.dir(user.Reasone );
 
+}
+
+function AddBtn(btnText, btnClass = "btn-primary",btnRow =0) {
+var button = document.createElement("button");
+    button.innerHTML = btnText;
+    button.classList.add("btn-interract");
+    button.classList.add("btn");
+    button.classList.add(btnClass);
+    // Добавлять  другую  стату через параметры или дата аттр или как либо иначе
+    var body = document.getElementsByClassName("chat-button-row")[btnRow];
+    //console.dir(body);
+    body.appendChild(button);
+    button.onclick =UserButtonInterract;
+}
+
+function UserButtonInterract(elem) {
+    //console.dir(elem);
+    //либо тут  добавлять
+    SwapChatPanel();
+    $(".chat-button-row").empty();
 }

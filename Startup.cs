@@ -68,7 +68,7 @@ namespace TechnicalSupport
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(3);
+                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(10);
                 hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(10);
                 hubOptions.MaximumReceiveMessageSize = 102400000;
                 

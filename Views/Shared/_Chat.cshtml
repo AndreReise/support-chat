@@ -70,32 +70,22 @@
 
 
 <div class="chat footer">
-    @*<div class="row">
-            <div class="col-md-1">
-                <button>1</button>
-            </div>
-            <div class="col-md-1">
-                <button>2</button>
-            </div>
-            <div class="col-md-1">
-                <button>3</button>
-            </div>
-        </div>*@
     <div class="chat-input">
         <input type="text" id="chat-input" placeholder="Send a message..." />
         <button type="submit" class="chat-submit" id="chat-submit"><i class='fas fa-paper-plane fa-lg'></i></button>
     </div>
-    @*<div class="row">
-            <button>Send</button>
-        </div>*@
-
+    <div class="chat-button-container">
+        <div class="chat-button-row">
+        </div>
+        <div class="chat-button-row">
+        </div>
+    </div>
 </div>
-
 
 <script>
 
-  
-  
+
+
 
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/chat")
@@ -103,11 +93,11 @@
         .withAutomaticReconnect()
         .build();
 
-  
+
     hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10; // 1 second * 60 * 10 = 10 minutes.
 
     let userName = "";
-  
+
     // получение сообщения от сервера
     hubConnection.on("Receive", function (mes) {
 
@@ -124,17 +114,43 @@
 
         }
 
-      
 
-      
+
+
+     
         servmessage.appendChild(document.createTextNode('Name:' + mes.dialogId));
         // создает элемент <p> для сообщения пользователя
         let elem = document.createElement("p");
-        elem.appendChild(document.createTextNode(mes.text));
-        servmessage.appendChild(elem);
 
-      
-     
+        if (mes.textTupe == "json") {
+
+            jsontext = JSON.parse(mes.text);
+            elem.appendChild(document.createTextNode(jsontext.text));
+            servmessage.appendChild(elem);
+            var index;
+            for (index = 0; index < jsontext.textbutton.length; ++index) {
+
+                var button = document.createElement("button");
+                button.innerHTML = jsontext.textbutton[index];
+                button.classList.add("btn-interract");
+                button.classList.add("btn");
+                button.classList.add("btn-primary");
+              
+                servmessage.appendChild(button);
+                button.onclick = UserButtonInterract;
+
+                var br = document.createElement("br");
+                servmessage.appendChild(br);
+            }
+
+        }
+        else
+        {
+            elem.appendChild(document.createTextNode(mes.text));
+            servmessage.appendChild(elem);
+        }
+
+
 
 
         var firstElem = document.getElementById("chat-messages").firstChild;
@@ -159,21 +175,48 @@
     });
 
     hubConnection.onclose((error) => {
-       hubConnection.start();
+        hubConnection.start();
         console.error(`Something went wrong: ${error}`);
     });
 
 
 
-  
-        // отправка сообщения от простого пользователя
-       
+    function AddBtn(btnText, btnClass = "btn-primary", btnRow = 3) {
+        var button = document.createElement("button");
+        button.innerHTML = btnText;
+        button.classList.add("btn-interract");
+        button.classList.add("btn");
+        button.classList.add(btnClass);
+        // Добавлять  другую  стату через параметры или дата аттр или как либо иначе
+        var body = document.getElementsByClassName("chat-button-row")[btnRow];
+        //console.dir(body);
+        body.appendChild(button);
+        button.onclick = UserButtonInterract;
+    }
 
-    document.getElementById("chat-submit").addEventListener("click", function(e) {
-            let text = document.getElementById("chat-input").value;
+    function UserButtonInterract(elem) {
+        //console.dir(elem);
+        //либо тут  добавлять
+        hubConnection.invoke("SendTechnical", { "Text": this.innerHTML, "Name": this.innerHTML, "SenderType": "in" });
+       
+      //  SwapChatPanel();
+        $(".chat-button-row").empty();
+    }
+
+    function SwapChatPanel() {
+        $(".chat-input").toggle();
+        $(".chat-button-container").toggle();
+    }
+
+
+    // отправка сообщения от простого пользователя
+
+
+    document.getElementById("chat-submit").addEventListener("click", function (e) {
+        let text = document.getElementById("chat-input").value;
         hubConnection.invoke("SendTechnical", { "Text": text, "Name": text, "SenderType": "in" });
-        });
-  
-    
+    });
+
+
     hubConnection.start();
 </script>

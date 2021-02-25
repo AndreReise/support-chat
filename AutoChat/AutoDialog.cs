@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TechnicalSupport.Data;
 using TechnicalSupport.Models;
@@ -31,6 +32,7 @@ namespace TechnicalSupport
         Dictionary<Dialogs, DialogMetod> DialogMetodDict;
         string DefaultTextMessage = "Напишіть: Бронювання квитків, Онлайн реєстрація, Повернення квитка, Онлайн Табло, Звязатися з оператором";
 
+      
 
         string [] textArrDialogOne = { "Нове бронювання", "Змінити бронювання"};
         string[] textArrDialogRegister = { "Для регістрації введіть номер бронювання", " Оберіть номер місця в діапазоні 0-44", "Ви зареестровані!" };
@@ -71,6 +73,19 @@ namespace TechnicalSupport
         public Message ReplyMessage (Message mes) 
         {
 
+            var v = new
+            {
+                buttoncount = 5,
+                text = "Оберіть сервіс:",
+                textbutton = new string[5] { "Бронювання квитків", "Онлайн реєстрація", "Повернення квитка", "Онлайн Табло", "Звязатися з оператором" }
+                
+            };
+
+            string json = JsonSerializer.Serialize(v);
+
+
+            mes.SenderType = "text";
+
 
             if (!clientDictionary.ContainsKey(mes.DialogId))
             {
@@ -86,7 +101,9 @@ namespace TechnicalSupport
                 if (!clientDictionary.ContainsKey(mes.DialogId))
                 {
                     clientDictionary.Add(mes.DialogId, (int)Dialogs.Cancel);
-                    mes.Text = DefaultTextMessage;
+                    mes.TextTupe = "json";
+                    // mes.Text = DefaultTextMessage;
+                    mes.Text = json;
 
                 }
 
@@ -106,7 +123,8 @@ namespace TechnicalSupport
                   
                     else
                     {
-                        mes.Text = clientDictionary[mes.DialogId] == 0 ? DefaultTextMessage : mes.Text;
+                        mes.TextTupe = "json";
+                        mes.Text = clientDictionary[mes.DialogId] == 0 ? json : mes.Text;
                     }
 
                 }

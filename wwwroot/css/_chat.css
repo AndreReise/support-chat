@@ -4,7 +4,7 @@
     overflow-y: auto;
     max-width: 50%;
     max-height: 85%;
-    height: 35rem;
+    height: 80%;
     border: 1px solid #fff;
     border-radius: 1em;
     position: fixed;
@@ -104,7 +104,7 @@ span.closeChat:hover, span.closeChat:focus, span.minimizeChat:hover, span.minimi
 }
 
 .chat.header {
-    background: red;
+    background: #ffe93e;
     position: sticky;
     top: 0;
     padding: 5px;
@@ -145,7 +145,9 @@ div.chat.footer {
     position: sticky;
     bottom: 0;
     background: red;
-    line-height:unset;
+    line-height: unset;
+    background: url(https://www.stratoscale.com/wp-content/uploads/2019/05/bigstock-168398480.jpg);
+    background-size: 100%;
 }
 
 div.chat-input {
@@ -210,13 +212,13 @@ div.chat-input {
     outline: none;
 }
 
-    #ChatOpenButton::after {
-        content: "\f086";
-        font-family: FontAwesome;
-        display: none;
-        height: 0;
-        width: 0px;
-    }
+#ChatOpenButton::after {
+    content: "\f086";
+    font-family: FontAwesome;
+    display: none;
+    height: 0;
+    width: 0px;
+}
 
 #ChatOpenButton:hover {
     background-color: #fff;
@@ -227,9 +229,30 @@ div.chat-input {
     Open close system */
 
 
+/*CHAT buttons
+--------------------------------------------------------------------------------    */
+.chat-button-container {
+    display: none;
+    position: relative;
+    left: 0;
+    bottom: 5%;
+    line-height: unset;
+
+}
+.chat-button-container .chat-button-row{
+    padding: 1%;
+}
+.chat-button-container.chat-button-row .btn-interract {
+    padding: 10%;
+}
+button.btn-interract {
+    margin-right: 2%;
+}
+/*--------------------------------------------------------------------------------
+   CHAT buttons */
+
 /*close connection modal 
 --------------------------------------------------------------------------------    */
-
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -244,20 +267,13 @@ div.chat-input {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-    .modal ul li {
-        display: inline; /* Отображать как строчный элемент */
-        margin-right: 5px; /* Отступ слева */
-        /*border: 1px solid #000;*/ /* Рамка вокруг текста */
-        padding: 3px; /* Поля вокруг текста */
-    }
-
-        .modal ul li .reasone-selected{
-
-        }
-.btn:focus{
- /*   border: 4px;
-    background:red;*/
+.modal ul li {
+    display: inline; /* Отображать как строчный элемент */
+    margin-right: 5px; /* Отступ слева */
+    /*border: 1px solid #000;*/ /* Рамка вокруг текста */
+    padding: 3px; /* Поля вокруг текста */
 }
+
 .btn:focus {
     animation: pulse 1.5s infinite;
 }
