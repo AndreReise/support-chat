@@ -38,8 +38,13 @@ namespace TechnicalSupport
         {
 
 
+<<<<<<< HEAD
             string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True";
           //  string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
+=======
+           // string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
+>>>>>>> master
             services.AddDbContext<ChatContext>(options => options.UseSqlServer(connection),
                  ServiceLifetime.Singleton
                 );
