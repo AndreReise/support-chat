@@ -137,7 +137,7 @@
                 button.classList.add("btn-primary");
               
                 servmessage.appendChild(button);
-                button.onclick = UserButtonInterract;
+                button.onclick = UserButtonInterracts;
 
                 var br = document.createElement("br");
                 servmessage.appendChild(br);
@@ -181,33 +181,16 @@
 
 
 
-    function AddBtn(btnText, btnClass = "btn-primary", btnRow = 3) {
-        var button = document.createElement("button");
-        button.innerHTML = btnText;
-        button.classList.add("btn-interract");
-        button.classList.add("btn");
-        button.classList.add(btnClass);
-        // Добавлять  другую  стату через параметры или дата аттр или как либо иначе
-        var body = document.getElementsByClassName("chat-button-row")[btnRow];
-        //console.dir(body);
-        body.appendChild(button);
-        button.onclick = UserButtonInterract;
-    }
-
-    function UserButtonInterract(elem) {
+    function UserButtonInterracts(elem) {
         //console.dir(elem);
         //либо тут  добавлять
         hubConnection.invoke("SendTechnical", { "Text": this.innerHTML, "Name": this.innerHTML, "SenderType": "in" });
        
       //  SwapChatPanel();
-        $(".chat-button-row").empty();
+      //  $(".chat-button-row").empty();
     }
 
-    function SwapChatPanel() {
-        $(".chat-input").toggle();
-        $(".chat-button-container").toggle();
-    }
-
+ 
 
     // отправка сообщения от простого пользователя
 

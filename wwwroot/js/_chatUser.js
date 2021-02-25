@@ -59,9 +59,9 @@ function RegisterInput() {
         }
         addMessage(msg, 'first','username','sometimes');
 
-        SwapChatPanel();
-        AddBtn("asdasd");
-        AddBtn("back to chat", "btn-success");
+       // SwapChatPanel();
+      //  AddBtn("asdasd");
+      //  AddBtn("back to chat", "btn-success");
 
         //setTimeout(function () {
         //    addMessage(msg, 'second', 'connectedSpecName','tooLate');
