@@ -41,7 +41,8 @@ namespace TechnicalSupport.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(AuthModel model)
         {
-            _authService.AuthenticateUserAsync(model);
+            var result = await _authService.AuthenticateUserAsync(model);
+            if (result.isSuccessful == false) return Ok("ERROR!!!!!");
             return Ok();
         }
     }

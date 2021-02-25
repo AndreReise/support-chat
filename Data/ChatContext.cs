@@ -31,6 +31,7 @@ namespace TechnicalSupport.Data
         public virtual DbSet<CommunicationType> CommunicationTypes { get; set; }
         public virtual DbSet<Detail> Details { get; set; }
         
+        public virtual DbSet<Dialog> Dialogs { get; set; }
         public virtual DbSet<RequestType> RequestTypes { get; set; }
         public virtual DbSet<Sex> Sexes { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
@@ -65,11 +66,11 @@ namespace TechnicalSupport.Data
                     .IsRequired()
                     .HasMaxLength(150);
 
-                entity.HasOne(d => d.ChatNavigation)
-                    .WithMany(p => p.Applications)
-                    .HasForeignKey(d => d.Chat)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Chat");
+                //entity.HasOne(d => d.ChatNavigation)
+                //    .WithMany(p => p.Applications)
+                //    .HasForeignKey(d => d.Chat)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Chat");
 
                 entity.HasOne(d => d.StatusNavigation)
                     .WithMany(p => p.Applications)

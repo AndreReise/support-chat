@@ -14,15 +14,22 @@ namespace TechnicalSupport.Models
         }
 
         public int EmployeeId { get; set; }
+        public Guid EmployeeGuid { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string SecondName { get; set; }
+
+
+        public bool StatusOnline { get; set; }
+
+
         public int? Age { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
+
+
         public int Sex { get; set; }
         public int WorkTime { get; set; }
-        public Guid EmployeeGuid { get; set; }
 
         public virtual Sex SexNavigation { get; set; }
         public virtual WorkTime WorkTimeNavigation { get; set; }

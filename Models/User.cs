@@ -9,8 +9,11 @@ namespace TechnicalSupport.Models
     public class User
     {
         public int UserId { get; set; }
-        public int RoleName { get; set; }
-        public int RoleId { get; set; }
+        public Guid UserGuid { get; set; }
+
+        public int? RoleId { get; set; }
+        public Role Role { get; set; }
+
 
         public string Email { get; set; }
         public string Phone { get; set; }

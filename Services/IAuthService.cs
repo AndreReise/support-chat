@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TechnicalSupport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace TechnicalSupport.Services
 {
     public interface IAuthService
     {
-       Task AuthenticateUserAsync(AuthModel model);
+       Task<AuthStatusResult> AuthenticateUserAsync(AuthModel model);
 
        Task SignOutAsync();
 

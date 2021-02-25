@@ -335,9 +335,9 @@ namespace TechnicalSupport
             if(emp !=null)
             {
                Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
-                thisDialog.EmployeeId = emp.Id;
+                thisDialog.EmployeeId = emp.EmployeeGuid;
                 _context.SaveChanges();
-                mes.Text = $"Перемикаю на оператора {emp.Name}";
+                mes.Text = $"Перемикаю на оператора {emp.SecondName}";
             }
             else
             {

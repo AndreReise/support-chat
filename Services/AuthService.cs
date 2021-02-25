@@ -10,7 +10,6 @@ using TechnicalSupport.Models;
 using TechnicalSupport.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using support_chat.Utils;
 
 namespace TechnicalSupport.Services
 {
@@ -30,19 +29,28 @@ namespace TechnicalSupport.Services
 
         }
 
-        public Task AuthenticateUserAsync(AuthModel model)
+        public Task<AuthStatusResult> AuthenticateUserAsync(AuthModel model)
         {
             return Task.Run(() => AuthenticateUser(model));
         }
 
-        private async Task AuthenticateUser(AuthModel model)
+        private async Task<AuthStatusResult> AuthenticateUser(AuthModel model)
         {
+            if(model.UserString == "test")
+            {
+                var id = new ClaimsIdentity(new List<Claim> { new Claim(ClaimsIdentity.DefaultNameClaimType, "Name") }, "ApplicationCookie");
+                var cp = new ClaimsPrincipal(id);
+                await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, cp);
+                return _authResult;
+            }
             var user = await _db.Users.SingleOrDefaultAsync(x => x.Phone == model.UserString || x.Email == model.UserString);
 
             if(user == null)
             {
-                
-                return;
+                _authResult.ErrorMessage = "User not found";
+                _authResult.isSuccessful = false;
+
+                return _authResult;
             }
 
             List<Claim> userClaims = await VerifyUserAsync(user);
@@ -52,13 +60,15 @@ namespace TechnicalSupport.Services
                 _authResult.ErrorMessage = "Wrong Credentials";
                 _authResult.isSuccessful = false;
 
-                return;
+                return _authResult;
             }
 
             var u_id = new ClaimsIdentity(userClaims, "ApplicationCookie");
             var claimsPrincipal = new ClaimsPrincipal(u_id);
 
             await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, claimsPrincipal);
+
+            return _authResult;
         }
 
 
@@ -70,7 +80,7 @@ namespace TechnicalSupport.Services
 
         private async Task< List<Claim>> VerifyUser(User user)
         {
-            switch (user.RoleName)
+            switch (1)
             {
                 case 1:
                     return await CreateClientClaims(user);

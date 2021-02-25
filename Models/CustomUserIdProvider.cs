@@ -18,10 +18,10 @@ namespace TechnicalSupport.Models
 
     public class CustomUserIdProvider : IUserIdProvider
     {
-        public static ChatContext _chatContext;
+        private readonly ChatContext _chatContext;
 
         Dictionary<string, Employee> EmploDictionar;
-        Dictionary<string, User> UserDictionar;
+        Dictionary<string, Client> UserDictionar;
 
         public CustomUserIdProvider (ChatContext db)
         {
@@ -29,8 +29,13 @@ namespace TechnicalSupport.Models
             _chatContext = db;
 
 
-            EmploDictionar =  _chatContext.Employees.Where(w => w.Email != null).ToDictionary(s => s.Email);
-            UserDictionar =  _chatContext.Users.Where(w=>w.Email != null).ToDictionary(s => s.Email);
+            var employees = _chatContext.Employees.Where(x => x.Email != null).Select(x => x).ToList();
+            if(employees != null)
+                EmploDictionar =  employees.ToDictionary(s => s.Email);
+
+            var clients = _chatContext.Clients.Where(x => x.Email != null);
+            if(clients != null)
+                UserDictionar =  clients.ToDictionary(s => s.Email);
             //_chatContext.Employees.Select(o => new DictionaryEntry
             //{
             //    Key = o.Id,
@@ -59,7 +64,7 @@ namespace TechnicalSupport.Models
 
                if ( EmploDictionar.ContainsKey(connection.User.Identity.Name))
                 { 
-               id = EmploDictionar[connection.User.Identity.Name].Id;
+               id = EmploDictionar[connection.User.Identity.Name].EmployeeGuid;
                 
                 }
 
@@ -67,7 +72,7 @@ namespace TechnicalSupport.Models
 
                 if (UserDictionar.ContainsKey(connection.User.Identity.Name))
                 {
-                  id = UserDictionar[connection.User.Identity.Name].Id;
+                  id = UserDictionar[connection.User.Identity.Name].ClientGuid;
                 }
 
                 id = id != null ? id : Guid.NewGuid();

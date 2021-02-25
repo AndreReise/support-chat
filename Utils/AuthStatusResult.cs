@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace support_chat.Utils
+namespace TechnicalSupport.Utils
 {
     public class AuthStatusResult
     {

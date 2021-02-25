@@ -1,33 +1,30 @@
+using System;
+using System.Globalization;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Localization;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using TechnicalSupport.Data;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.AspNetCore.SignalR;
+
 using TechnicalSupport.Models;
-using TechnicalSupport.Data;
 using TechnicalSupport.Services;
+using TechnicalSupport.Data;
 
 
 namespace TechnicalSupport
 {
     public class Startup
     {
-
+        private CultureInfo[] supportedCultures;
 
         public Startup(IConfiguration configuration)
         {
@@ -37,18 +34,17 @@ namespace TechnicalSupport
       
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
-           
-            string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SupportChat;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
+            //string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SupportChat;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
             services.AddDbContext<ChatContext>(options => options.UseSqlServer(connection),
                  ServiceLifetime.Singleton
                 );
 
-      
+
 
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>(sp=>
             {
@@ -62,23 +58,7 @@ namespace TechnicalSupport
 
             services.AddSingleton<AutoDialog>();
 
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-             .AddCookie(options =>
-             {
-
-                 options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                 options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-             });
-
             services.AddControllersWithViews();
-            //for local testing
-            services.AddDbContext<ChatContext>(options =>
-            options.UseSqlServer("Data Source=.;Initial Catalog=chat_db;Integrated Security=True"));
-
-            //services.AddDbContext<SupportContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -121,7 +101,6 @@ namespace TechnicalSupport
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
          
@@ -150,29 +129,25 @@ namespace TechnicalSupport
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<MessageHub>("/chat");
+            });
 
             var supportedCultures = new[]
             {
                 new CultureInfo("ru")
             };
-
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("ru"),
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
-
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapHub<MessageHub>("/chat");
-            });
         }
     }
 
 
-    }
-    }
+ }
 
 
 
