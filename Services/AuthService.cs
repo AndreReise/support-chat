@@ -10,6 +10,7 @@ using TechnicalSupport.Models;
 using TechnicalSupport.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using support_chat.Utils;
 
 namespace TechnicalSupport.Services
 {

@@ -30,17 +30,13 @@ namespace TechnicalSupport.Models
 
 
             var employees = _chatContext.Employees.Where(x => x.Email != null).Select(x => x).ToList();
-            if(employees != null)
-                EmploDictionar =  employees.ToDictionary(s => s.Email);
+            if (employees != null)
+                EmploDictionar = employees.ToDictionary(s => s.Email);
 
             var clients = _chatContext.Clients.Where(x => x.Email != null);
-            if(clients != null)
-                UserDictionar =  clients.ToDictionary(s => s.Email);
-            //_chatContext.Employees.Select(o => new DictionaryEntry
-            //{
-            //    Key = o.Id,
-            //    Value = o.Email
-            //}).ToList();
+            if (clients != null)
+                UserDictionar = clients.ToDictionary(s => s.Email);
+
 
         }
 
@@ -50,16 +46,6 @@ namespace TechnicalSupport.Models
 
             if (connection.User?.Identity.Name != null)
             {
-
-             
-              //  var userDichtionary = HomeController.useremail;
-
-                // string t = userDichtionary.Keys.FirstOrDefault(s => s.Contains(connection.User?.Identity.Name));
-                // string t = MessageHub._context.Users.FirstOrDefault(s => s.Email == connection.User.Identity.Name.ToString()).Id.ToString();
-                // string t = userDichtionary.Where((d, v) => d.Key.Contains(connection.User.Identity.Name.ToString())).Select(v => v.Values).ToList();
-                
-                
-              //  var user = _chatContext.Users.FirstOrDefault(s => s.Email == connection.User.Identity.Name);
 
 
                if ( EmploDictionar.ContainsKey(connection.User.Identity.Name))
@@ -76,12 +62,6 @@ namespace TechnicalSupport.Models
                 }
 
                 id = id != null ? id : Guid.NewGuid();
-
-
-                // Guid id = user?.Id ?? _chatContext.Employees.FirstOrDefault(s => s.Email == connection.User.Identity.Name).Id;
-
-
-                //  string t = userDichtionary[connection.User?.Identity.Name].ToString();
 
                 return id.ToString();
 
