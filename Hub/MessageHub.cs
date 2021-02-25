@@ -190,13 +190,13 @@ namespace TechnicalSupport
             if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "admin"))
             {
                 Employee employee = await _context.Employees
-                  .Include(u => u.Role)
+                  //.Include(u => u.Role)
                   .SingleOrDefaultAsync(u => u.Email == Context.User.Identity.Name);
 
                 if (employee != null)
                 {
                     employee.StatusOnline = true;
-                    await Clients.User(employee.Id.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = "Hello Admin" });
+                    await Clients.User(employee.EmployeeId.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = "Hello Admin" });
 
                 }
 
@@ -209,20 +209,20 @@ namespace TechnicalSupport
 
                     User user = await _context.Users
                     .Include(u => u.Role)
-                    .SingleOrDefaultAsync(u => u.Id == Guid.Parse(Context.UserIdentifier));
+                    .SingleOrDefaultAsync(u => u.UserGuid == Guid.Parse(Context.UserIdentifier));
 
                             if (user != null)
                             {
 
-                                 Guid guidDialog = Guid.NewGuid();
-                                Employee name = _context.Employees.Where(e => e.StatusOnline == true).FirstOrDefault();
-                               await Clients.User(user.Id.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = name != null ? " Hello user":"No available employees!", DialogId = guidDialog });
+                               Guid guidDialog = Guid.NewGuid();
+                               Employee name = _context.Employees.Where(e => e.StatusOnline == true).FirstOrDefault();
+                               await Clients.User(user.UserId.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = name != null ? " Hello user":"No available employees!", DialogId = guidDialog });
 
                                 
                                 if (name != null)
                                 {
 
-                                    _context.Dialogs.Add(new Dialog() { UserId = user.Id, DialogId = guidDialog, EmployeeId = name.Id });
+                                    _context.Dialogs.Add(new Dialog() { UserId = user.UserGuid, DialogId = guidDialog, EmployeeId = name.EmployeeGuid });
 
                                 }
                                 else
@@ -238,7 +238,7 @@ namespace TechnicalSupport
                      else
                      {
                               Guid Id = Guid.Parse(Context.UserIdentifier);
-                              _context.Users.Add(new User() { Id = Id });
+                              _context.Users.Add(new User() { UserGuid = Id });
                               Guid dialogId = Guid.NewGuid();
                               Dialog temp = new Dialog() { UserId = Guid.Parse(Context.UserIdentifier), DialogId = dialogId, EmployeeId = Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b") };
                               _context.Dialogs.Add(temp);
@@ -263,8 +263,7 @@ namespace TechnicalSupport
             if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "admin"))
             {
                 Employee employee = await _context.Employees
-              .Include(u => u.Role)
-              .SingleOrDefaultAsync(u => u.Id == Guid.Parse(Context.UserIdentifier));
+              .SingleOrDefaultAsync(u => u.EmployeeGuid == Guid.Parse(Context.UserIdentifier));
 
                 if (employee != null)
                 {
@@ -278,7 +277,7 @@ namespace TechnicalSupport
 
                 User user =  _context.Users
                 .Include(u => u.Role)
-                .SingleOrDefaultAsync(u => u.Id == Guid.Parse(Context.UserIdentifier)).Result;
+                .SingleOrDefaultAsync(u => u.UserGuid == Guid.Parse(Context.UserIdentifier)).Result;
 
 
                 if (user != null)
