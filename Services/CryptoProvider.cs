@@ -11,6 +11,7 @@ namespace TechnicalSupport.Services
     public class CryptoProvider : ICryptoProvider
     {
         private readonly byte[] g_salt;
+        private const int LOCAL_HASH_LENGTH = 10;
         public CryptoProvider()
         {
             //set g_salt
@@ -25,11 +26,11 @@ namespace TechnicalSupport.Services
             return GetSHA256Hash(preHash.AddBytes(g_salt));
         }
 
-        public byte[] GetRandomSaltString(int str_length)
+        public byte[] GetRandomSaltString()
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 
-            byte[] random_bytes = new byte[str_length];
+            byte[] random_bytes = new byte[LOCAL_HASH_LENGTH];
             rng.GetBytes(random_bytes);
 
             return random_bytes;

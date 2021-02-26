@@ -33,6 +33,8 @@ namespace TechnicalSupport.Data
         
         public virtual DbSet<Dialog> Dialogs { get; set; }
         public virtual DbSet<RequestType> RequestTypes { get; set; }
+
+        public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Sex> Sexes { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<EmployeeTask> Tasks { get; set; }

@@ -32,6 +32,20 @@ namespace TechnicalSupport.Controllers
         }
 
 
+        //Registration
+        [HttpGet]
+        public IActionResult Join()
+        {
+            return View();
+        }
+
+
+        [HttpPost] IActionResult Join(JoinModel model)
+        {
+
+        }
+
+
         [HttpGet]
         public IActionResult Login()
         {
