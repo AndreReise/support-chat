@@ -13,9 +13,9 @@ namespace TechnicalSupport
 
 
         delegate Message DialogMetod (Message mes);
-        private Dictionary<Guid, int> clientDictionary;
-        private Dictionary<Guid, int> dialogOneState;
-        private Dictionary<Guid, int> dialogTwoState;
+        private Dictionary<Guid, int> clientState;
+        private Dictionary<Guid, int> dialogBookingState;
+        private Dictionary<Guid, int> dialogRegState;
         Dictionary<Guid, Dictionary<string, string>> UserDataDictionary;
         private ChatContext _context;
 
@@ -30,21 +30,23 @@ namespace TechnicalSupport
         }
         private Dictionary<Dialogs, string> DialogName;
         Dictionary<Dialogs, DialogMetod> DialogMetodDict;
-        string DefaultTextMessage = "Напишіть: Бронювання квитків, Онлайн реєстрація, Повернення квитка, Онлайн Табло, Звязатися з оператором";
+        string DefaultTextMessage;
 
       
 
-        string [] textArrDialogOne = { "Нове бронювання", "Змінити бронювання"};
+        string [] textArrDialogBooking = { "Нове бронювання", "Змінити бронювання"};
         string[] textArrDialogRegister = { "Для регістрації введіть номер бронювання", " Оберіть номер місця в діапазоні 0-44", "Ви зареестровані!" };
         string[] arrNumberBooking = {"BA5555","BB444","BC3333", "AA1111" };
+
+
 
 
         public AutoDialog(ChatContext context)
         {
             _context = context;
-            clientDictionary = new Dictionary<Guid, int>();
-            dialogOneState = new Dictionary<Guid, int>();
-            dialogTwoState = new Dictionary<Guid, int>();
+            clientState = new Dictionary<Guid, int>();
+            dialogBookingState = new Dictionary<Guid, int>();
+            dialogRegState = new Dictionary<Guid, int>();
             UserDataDictionary = new Dictionary<Guid, Dictionary<string, string>>();
             DialogName = new Dictionary<Dialogs, string>() {
                 { Dialogs.Booking, "Бронювання квитків" },
@@ -56,13 +58,17 @@ namespace TechnicalSupport
             };
 
             DialogMetodDict = new Dictionary<Dialogs, DialogMetod>() {
-                {Dialogs.Booking,  DialogOne},
-                {Dialogs.Register,  DialogTwo},
+                {Dialogs.Booking,  DialogBooking},
+                {Dialogs.Register,  DialogRegister},
                 {Dialogs.Employee,  DialogEmployee},
 
             };
 
-         
+
+            DefaultTextMessage = ButtonToJson(5, "Оберіть сервіс:", new string[5] { "Бронювання квитків", "Онлайн реєстрація", "Повернення квитка", "Онлайн Табло", "Звязатися з оператором" });
+
+          
+
         }
 
 
@@ -73,37 +79,24 @@ namespace TechnicalSupport
         public Message ReplyMessage (Message mes) 
         {
 
-            var v = new
-            {
-                buttoncount = 5,
-                text = "Оберіть сервіс:",
-                textbutton = new string[5] { "Бронювання квитків", "Онлайн реєстрація", "Повернення квитка", "Онлайн Табло", "Звязатися з оператором" }
-                
-            };
+          
 
-            string json = JsonSerializer.Serialize(v);
+          
 
-
-            mes.SenderType = "text";
-
-
-            if (!clientDictionary.ContainsKey(mes.DialogId))
+            if (!clientState.ContainsKey(mes.DialogId))
             {
 
                 if (DialogName.ContainsValue(mes.Text))
                 {
                     var tupeDialog = DialogName.Where(w => w.Value.Contains(mes.Text)).FirstOrDefault().Key;
-                    clientDictionary.Add(mes.DialogId, (int)tupeDialog);
-                    DialogMetodDict[tupeDialog](mes);
+                    clientState.Add(mes.DialogId, (int)tupeDialog);
+                    mes = DialogMetodDict[tupeDialog](mes);
                 }
-            
-
-                if (!clientDictionary.ContainsKey(mes.DialogId))
+                  else
                 {
-                    clientDictionary.Add(mes.DialogId, (int)Dialogs.Cancel);
+                    clientState.Add(mes.DialogId, (int)Dialogs.Cancel);
                     mes.TextTupe = "json";
-                    // mes.Text = DefaultTextMessage;
-                    mes.Text = json;
+                    mes.Text = DefaultTextMessage;
 
                 }
 
@@ -111,27 +104,26 @@ namespace TechnicalSupport
             }
             else 
             {
-                int tmp = clientDictionary[mes.DialogId];
+                int tmp = clientState[mes.DialogId];
                 if ( tmp == 0)
                 {
                     if(DialogName.ContainsValue(mes.Text))
                     {
                         var tupeDialog = DialogName.Where(w => w.Value.Contains(mes.Text)).FirstOrDefault().Key;
-                            clientDictionary[mes.DialogId] = (int)tupeDialog;
-                            DialogMetodDict[tupeDialog](mes);
+                            clientState[mes.DialogId] = (int)tupeDialog;
+                            mes = DialogMetodDict[tupeDialog](mes);
                     }
-                  
                     else
                     {
                         mes.TextTupe = "json";
-                        mes.Text = clientDictionary[mes.DialogId] == 0 ? json : mes.Text;
+                        mes.Text = clientState[mes.DialogId] == 0 ? DefaultTextMessage : mes.Text;
                     }
 
                 }
                 else
                 {
 
-                    DialogMetodDict[(Dialogs)clientDictionary[mes.DialogId]](mes);         
+                  mes = DialogMetodDict[(Dialogs)clientState[mes.DialogId]](mes);         
                 }
 
             }
@@ -142,48 +134,124 @@ namespace TechnicalSupport
 
 
 
-        public Message DialogOne(Message mes)
+        public Message DialogBooking(Message mes)
         {
+            string ButtoBookingOne = ButtonToJson(2, "Оберіть дію:", new string[2] { "Нове бронювання", "Змінити бронювання" });
 
-            if (dialogOneState.ContainsKey(mes.DialogId))
+
+            if (dialogBookingState.ContainsKey(mes.DialogId))
             {
-                var state = dialogOneState[mes.DialogId];
-                if (textArrDialogOne.Length > state)
+                var state = dialogBookingState[mes.DialogId];
+
+                if (textArrDialogBooking.Length > state && state > 0)
                 {
-                    mes.Text = textArrDialogOne[state];
-                    dialogOneState[mes.DialogId]++;
+                    bool valid = false;
+                    switch (state)
+                    {
+                        case 1:
+                            valid = ValidationOne(mes);
+                            break;
+                        case 2:
+                            valid = ValidationTwo(mes);
+                            break;
+                        case 3:
+                            valid = ValidationThree(mes);
+                            break;
+
+                    }
+                    if (!valid)
+                    {
+                        mes.Text = "Не вірно введені дані " + textArrDialogBooking[--state];
+                        return mes;
+
+                    }
+
+                    mes.Text = textArrDialogRegister[state];
+                    dialogRegState[mes.DialogId]++;
+
+                    if (textArrDialogRegister.Length <= dialogRegState[mes.DialogId])
+                    {
+                        clientState[mes.DialogId] = 0;
+                        dialogRegState[mes.DialogId] = 0;
+
+                    }
+                    return mes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               
 
                 }
 
-                if (textArrDialogOne.Length <= dialogOneState[mes.DialogId])
+
+
+                if (textArrDialogBooking.Length <= dialogBookingState[mes.DialogId])
                 {
-                    clientDictionary[mes.DialogId] = 0;
-                    dialogOneState[mes.DialogId] = 0;
+                    clientState[mes.DialogId] = 0;
+                    dialogBookingState[mes.DialogId] = 0;
                 }
               
 
             }
             else
             {
-                dialogOneState.Add(mes.DialogId, 0);
-                    mes.Text = textArrDialogOne[0];
-                dialogOneState[mes.DialogId]++;
+                dialogBookingState.Add(mes.DialogId, 0);
+                mes.TextTupe = "json";
+                mes.Text = ButtoBookingOne;
+                dialogBookingState[mes.DialogId]++;
 
             }
 
 
             return mes;
+
+
+           bool ValidationOne(Message mes)
+            {
+
+
+                return false;
+            }
+            bool ValidationTwo(Message mes)
+            {
+
+
+                return false;
+            }
+            bool ValidationThree(Message mes)
+            {
+
+
+                return false;
+            }
+
+
+
+
         }
 
-        public Message DialogTwo(Message mes)
+        public Message DialogRegister(Message mes)
         {
 
 
             
-            if (dialogTwoState.ContainsKey(mes.DialogId))
+            if (dialogRegState.ContainsKey(mes.DialogId))
             {
 
-                var state = dialogTwoState[mes.DialogId];
+                var state = dialogRegState[mes.DialogId];
 
                 if (textArrDialogRegister.Length > state && state > 0)
                 {
@@ -205,45 +273,40 @@ namespace TechnicalSupport
                     {
                         mes.Text = "Не вірно введені дані "+textArrDialogRegister[--state];
 
-                      //  dialogTwoState[mes.DialogId]--;
+                      //  dialogRegState[mes.DialogId]--;
                         return mes;
 
                     }
                     mes.Text = textArrDialogRegister[state];
-                    dialogTwoState[mes.DialogId]++;
+                    dialogRegState[mes.DialogId]++;
 
-                    if (textArrDialogRegister.Length <= dialogTwoState[mes.DialogId])
+                    if (textArrDialogRegister.Length <= dialogRegState[mes.DialogId])
                     {
-                        clientDictionary[mes.DialogId] = 0;
-                        dialogTwoState[mes.DialogId] = 0;
+                        clientState[mes.DialogId] = 0;
+                        dialogRegState[mes.DialogId] = 0;
                       
                     }
                     return mes;
 
                 }
 
-
-
-              
-
-
             }
             else
             {
-                dialogTwoState.Add(mes.DialogId, 0);
+                dialogRegState.Add(mes.DialogId, 0);
                 
           
 
             }
-            mes.Text = textArrDialogRegister[dialogTwoState[mes.DialogId]];
-            dialogTwoState[mes.DialogId]++;
+            mes.Text = textArrDialogRegister[dialogRegState[mes.DialogId]];
+            dialogRegState[mes.DialogId]++;
 
             return mes;
 
 
             bool ValidationOne (Message mes)
             {
-                if(dialogTwoState[mes.DialogId] ==1)
+                if(dialogRegState[mes.DialogId] ==1)
                 {
                     var numberBooking = mes.Text;
                    if(arrNumberBooking.Contains(numberBooking))
@@ -281,7 +344,7 @@ namespace TechnicalSupport
 
             bool ValidationTwo(Message mes)
             {
-                if (dialogTwoState[mes.DialogId] == 2)
+                if (dialogRegState[mes.DialogId] == 2)
                 {
                     
                     int numberseat;
@@ -314,7 +377,7 @@ namespace TechnicalSupport
 
             bool ValidationThree(Message mes)
             {
-                if (dialogTwoState[mes.DialogId] == 3)
+                if (dialogRegState[mes.DialogId] == 3)
                 {
 
                  
@@ -346,13 +409,13 @@ namespace TechnicalSupport
 
 
         
-             public Message DialogEmployee(Message mes)
+        public Message DialogEmployee(Message mes)
         {
-           Employee emp = _context.Employees.Where(w => w.StatusOnline == true & w.Email != "Bot@mail.com").FirstOrDefault();
+            Employee emp = _context.Employees.Where(w => w.StatusOnline == true & w.Email != "Bot@mail.com").FirstOrDefault();
 
             if(emp !=null)
             {
-               Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
+                Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
                 thisDialog.EmployeeId = emp.EmployeeGuid;
                 _context.SaveChanges();
                 mes.Text = $"Перемикаю на оператора {emp.SecondName}";
@@ -360,14 +423,26 @@ namespace TechnicalSupport
             else
             {
                 mes.Text = "На даний момент немає доступних працівників";
-                clientDictionary[mes.DialogId] = 0;
+                clientState[mes.DialogId] = 0;
 
             }
-
-           
-
-            return mes;
+        return mes;
         }
+
+        public string ButtonToJson (int i, string text, string [] buttontext)
+        {
+            var buttons = new
+            {
+                buttoncount = i,
+                text = text,
+                textbutton = buttontext
+
+            };
+            string json = JsonSerializer.Serialize(buttons);
+            return json;
+        }
+
+
 
 
     }

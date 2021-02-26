@@ -184,7 +184,7 @@
     function UserButtonInterracts(elem) {
         //console.dir(elem);
         //либо тут  добавлять
-        hubConnection.invoke("SendTechnical", { "Text": this.innerHTML, "Name": this.innerHTML, "SenderType": "in" });
+        hubConnection.invoke("Send", { "Text": this.innerHTML, "Name": this.innerHTML, "SenderType": "in" });
        
       //  SwapChatPanel();
       //  $(".chat-button-row").empty();
@@ -197,7 +197,7 @@
 
     document.getElementById("chat-submit").addEventListener("click", function (e) {
         let text = document.getElementById("chat-input").value;
-        hubConnection.invoke("SendTechnical", { "Text": text, "Name": text, "SenderType": "in" });
+        hubConnection.invoke("Send", { "Text": text, "Name": text, "SenderType": "in" });
     });
 
 

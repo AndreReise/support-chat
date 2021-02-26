@@ -94,72 +94,12 @@ namespace TechnicalSupport
 
 
 
-
         }
 
         public async Task SendTechnical(Message message)
         {
 
-            var dialog = _context.Dialogs.FirstOrDefault(em => em.UserId.ToString() == Context.UserIdentifier);
-
-            if (dialog != null)
-            {
-
-              
-
-                message.SenderType = "in";
-                message.DialogId = dialog.DialogId;
-                message.ClientId = dialog.UserId;
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", message);
-
-                if (dialog.EmployeeId == Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b"))
-                {
-
-                    Message repmes = _autoDialog.ReplyMessage(message);
-
-                    message.SenderType = "out";
-
-                    await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", repmes);
-                }
-                else
-                {
-
-                    await Clients.User(dialog.EmployeeId.ToString()).SendAsync("Receive", message);
-                }
-
-             
-
-
-            }
-            else
-            {
-              
-                Guid dialogId = Guid.NewGuid();
-
-                Dialog temp = new Dialog() { UserId = Guid.Parse(Context.UserIdentifier), DialogId = dialogId, EmployeeId = Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b") };
-                _context.Dialogs.Add(temp);
-                _context.SaveChanges();
-
-                message.DialogId = dialogId;
-
-
-                message.SenderType = "in";
-
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", message);
-
-                Message repmes = _autoDialog.ReplyMessage(message);
-
-                message.SenderType = "out";
-
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", repmes);
-
-
-
-            }
-
-
-
-
+         
 
         }
 
