@@ -23,6 +23,8 @@ namespace TechnicalSupport.Controllers
             _authService = authService;
         }
 
+
+
         [Authorize]
         public IActionResult Index()
         {
@@ -31,8 +33,9 @@ namespace TechnicalSupport.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
+            ViewBag.AuthResult = new AuthStatusResult();
             return View();
         }
 
@@ -41,9 +44,21 @@ namespace TechnicalSupport.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(AuthModel model)
         {
-            var result = await _authService.AuthenticateUserAsync(model);
-            if (result.isSuccessful == false) return Ok("ERROR!!!!!");
-            return Ok();
+            var lResult = await _authService.AuthenticateUserAsync(model);
+            if (lResult.isSuccessful == false)
+            {
+
+                ViewBag.AuthResult = lResult;
+                return View(model);
+
+            }
+            else
+            {
+
+                return RedirectToAction(nameof(Index));
+
+            }
+            
         }
     }
 }
