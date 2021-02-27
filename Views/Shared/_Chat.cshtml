@@ -127,22 +127,26 @@
             jsontext = JSON.parse(mes.text);
             elem.appendChild(document.createTextNode(jsontext.text));
             servmessage.appendChild(elem);
-            var index;
-            for (index = 0; index < jsontext.textbutton.length; ++index) {
+           
+            if (jsontext.buttoncount > 0) {
+                var index;
+                for (index = 0; index < jsontext.textbutton.length; ++index) {
 
-                var button = document.createElement("button");
-                button.innerHTML = jsontext.textbutton[index];
-                button.classList.add("btn-interract");
-                button.classList.add("btn");
-                button.classList.add("btn-primary");
-              
-                servmessage.appendChild(button);
-                button.onclick = UserButtonInterracts;
+                    var button = document.createElement("button");
+                    button.innerHTML = jsontext.textbutton[index];
+                    button.classList.add("btn-interract");
+                    button.classList.add("btn");
+                    button.classList.add("btn-primary");
 
-                var br = document.createElement("br");
-                servmessage.appendChild(br);
+                    servmessage.appendChild(button);
+                    button.onclick = UserButtonInterracts;
+
+                    var br = document.createElement("br");
+                    servmessage.appendChild(br);
+                }
+
             }
-
+           
         }
         else
         {

@@ -83,9 +83,9 @@ namespace TechnicalSupport
         public Message ReplyMessage (Message mes) 
         {
 
-          
 
-          
+            mes.TextTupe = "text";
+
 
             if (!clientState.ContainsKey(mes.DialogId))
             {
@@ -138,7 +138,7 @@ namespace TechnicalSupport
 
         public Message DialogBookingMain (Message mes)
         {
-
+            mes.TextTupe = "text";
             if (dialogBookingState.ContainsKey(mes.DialogId))
             {
                 switch (dialogBookingState[mes.DialogId])
@@ -198,10 +198,19 @@ namespace TechnicalSupport
 
         public Message DialogBookingNew(Message mes)
         {
-          
-            string ButtoBookingOne = ButtonToJson(4, "Оберіть пункт відправлення:", new string[4] {"Київ", "Харків", "Львів", "Одеса" });
+
+            string ButtoBookingOne = ButtonToJson(4, "Оберіть пункт відправлення:", new string[4] { "Київ", "Харків", "Львів", "Одеса" });
 
             string ButtoBookingTwo = ButtonToJson(4, "Оберіть пункт призначення:", new string[4] { "Київ", "Харків", "Львів", "Одеса" });
+
+            string textnumberseat = ButtonToJson(0, "Введіть номер місця з 1 до 22");
+            string flight;
+            string numBooking;
+            if (UserDataDictionary.ContainsKey(mes.DialogId) && UserDataDictionary[mes.DialogId].ContainsKey("Flight")) { flight = UserDataDictionary[mes.DialogId]["Flight"]; }else { flight = ""; }
+            if (UserDataDictionary.ContainsKey(mes.DialogId) && UserDataDictionary[mes.DialogId].ContainsKey("NumBooking")) { numBooking = UserDataDictionary[mes.DialogId]["NumBooking"]; } else { numBooking = ""; }
+
+            string textBookingConfirm = ButtonToJson(2, $"Підтвердіть бронювання за маршрутом  {flight}", new string[2] { "Yes", "No" });
+            
 
             string[][] tableflight = { new string[] {"Київ",    "Лвів",     "8.03.21",  "10:30"},
                                        new string[] {"Київ",    "Одеса",    "9.03.21",  "12:10"},
@@ -217,8 +226,7 @@ namespace TechnicalSupport
                                        new string[] {"Одеса",   "Лвів",     "19.03.21", "17:50"},
                                     };
 
-            string[] textArrDialogNewBooking = { ButtoBookingOne, ButtoBookingTwo, "Оберіть рейс", "Оберіть місце", "підтвердити бронювання", "Дякуємо!" };
-
+            string[] textArrDialogNewBooking = { ButtoBookingOne, ButtoBookingTwo, "Оберіть рейс", textnumberseat, textBookingConfirm, "" };
 
 
 
@@ -243,35 +251,58 @@ namespace TechnicalSupport
                         case 3:
                             valid = ValidationThree(mes);
                             break;
+                        case 4:
+                            valid = ValidationFour(mes);
+                            break;
+                        case 5:
+                            {
+                                valid = ValidationFive(mes);
+                                textArrDialogNewBooking[5] = valid ? ButtonToJson(0, $"Дякуємо! Номер бронювання: {UserDataDictionary[mes.DialogId]["NumBooking"]}"):"";
+                                break;
+                            }
+                            
 
                     }
                     if (!valid)
                     {
-                        mes.Text = "Не вірно введені дані " + textArrDialogNewBooking[--state];
+                        // mes.TextTupe = "text";
+                        mes.Text = textArrDialogNewBooking[--state];
                         return mes;
 
                     }
 
                     if (dialogNewBookingState[mes.DialogId] == 2)
                     {
-                       string from = UserDataDictionary[mes.DialogId]["From"];
-                       string to = UserDataDictionary[mes.DialogId]["To"] ;
                         List<string> arr = new List<string>();
-                        for (int i=0; i< tableflight.Length; i++)
+
+                        string from = UserDataDictionary[mes.DialogId]["From"];
+                        string to = UserDataDictionary[mes.DialogId]["To"];
+
+                        for (int i = 0; i < tableflight.Length; i++)
                         {
 
-                            if (tableflight[i][0]==from && tableflight[i][1] ==to)
+                            if (tableflight[i][0] == from && tableflight[i][1] == to)
                             {
 
-                                arr.Add(tableflight[i][0]+"-"+ tableflight[i][1]+" "+ tableflight[i][2]);
+                                arr.Add(tableflight[i][0] + "-" + tableflight[i][1] + " " + tableflight[i][2]);
 
                             }
 
                         }
 
-                     
-                        mes.Text =  ButtonToJson (arr.Count(),"Оберіть маршрут:" , arr.ToArray() );
-                        dialogNewBookingState[mes.DialogId]++;
+                        if (arr.Count() > 0)
+                        {
+
+                            mes.Text = ButtonToJson(arr.Count(), "Оберіть маршрут:", arr.ToArray());
+                            dialogNewBookingState[mes.DialogId]++;
+                        }
+                        else
+                        {
+                            mes.TextTupe = "text";
+                            mes.Text = "Маршрутів не знайдено! Змініть пункт призначення.";
+                            dialogNewBookingState[mes.DialogId]--;
+                        }
+
                     }
                     else
                     {
@@ -285,11 +316,12 @@ namespace TechnicalSupport
 
 
 
-                    if (textArrDialogNewBooking.Length <= dialogBookingState[mes.DialogId])
+                    if (textArrDialogNewBooking.Length <= dialogNewBookingState[mes.DialogId])
                     {
                         clientState[mes.DialogId] = 0;
                         dialogBookingState[mes.DialogId] = 0;
                         dialogNewBookingState[mes.DialogId] = 0;
+                       
                     }
                     return mes;
 
@@ -307,7 +339,7 @@ namespace TechnicalSupport
             return mes;
 
 
-           bool ValidationOne(Message mes)
+            bool ValidationOne(Message mes)
             {
                 if (dialogNewBookingState[mes.DialogId] == 1 && tableflight.Any(x => x.Contains(mes.Text)))
                 {
@@ -315,14 +347,14 @@ namespace TechnicalSupport
                     if (!UserDataDictionary.ContainsKey(mes.DialogId))
                     {
                         UserDataDictionary.Add(mes.DialogId, new Dictionary<string, string>() { { "From", mes.Text } });
-                       
+
                     }
                     else
                     {
                         if (UserDataDictionary[mes.DialogId].ContainsKey("From"))
                         {
                             UserDataDictionary[mes.DialogId]["From"] = mes.Text;
-                           
+
                         }
                         else
                         {
@@ -331,10 +363,10 @@ namespace TechnicalSupport
 
                     }
                     return true;
-           
+
                 }
 
-                return false;   
+                return false;
             }
 
 
@@ -368,12 +400,137 @@ namespace TechnicalSupport
                 return false;
             }
 
-
-
-                bool ValidationThree(Message mes)
+            bool ValidationThree(Message mes)
             {
+                List<string> arr = new List<string>();
+
+                for (int i = 0; i < tableflight.Length; i++)
+                {
+                    arr.Add(tableflight[i][0] + "-" + tableflight[i][1] + " " + tableflight[i][2]);
+                }
 
 
+                if (dialogNewBookingState[mes.DialogId] == 3 && arr.Contains(mes.Text))
+                {
+                    if (!UserDataDictionary.ContainsKey(mes.DialogId))
+                    {
+                        UserDataDictionary.Add(mes.DialogId, new Dictionary<string, string>() { { "Flight", mes.Text } });
+
+                    }
+                    else
+                    {
+                        if (UserDataDictionary[mes.DialogId].ContainsKey("Flight"))
+                        {
+                            UserDataDictionary[mes.DialogId]["Flight"] = mes.Text;
+
+                        }
+                        else
+                        {
+                            UserDataDictionary[mes.DialogId].Add("Flight", mes.Text);
+                        }
+
+                    }
+                    return true;
+                }
+
+                return false;
+            }
+
+            bool ValidationFour(Message mes)
+            {
+                if (dialogNewBookingState[mes.DialogId] == 4)
+                {
+
+                    int numberseat;
+
+                    if (int.TryParse(mes.Text, out numberseat) && numberseat <= 22 && numberseat > 0)
+                    {
+                        if (UserDataDictionary[mes.DialogId].ContainsKey("NumSeat"))
+                        {
+                            UserDataDictionary[mes.DialogId]["NumSeat"] = mes.Text;
+                        }
+                        else
+                        {
+                            UserDataDictionary[mes.DialogId].Add("NumSeat", mes.Text);
+                        }
+
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+
+                    }
+
+                }
+
+                return false;
+            }
+
+            bool ValidationFive(Message mes)
+            {
+                if (dialogNewBookingState[mes.DialogId] == 5)
+                {
+
+
+                    if (mes.Text == "Yes")
+                    {
+                        char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+                        string numbooking = "";
+                        Random rand = new Random();
+
+                        for (int j = 0; j <= 6; j++)
+                        {
+                           
+                            if (j == 0 || j == 1)
+                            {
+                                int num = rand.Next(0, letters.Length - 1);
+                                numbooking += letters[num];
+                            }
+                            else
+                            {
+                                int num = rand.Next(0, 9);
+                                numbooking += num;
+
+                            }
+
+                        }
+
+                        if (!UserDataDictionary.ContainsKey(mes.DialogId))
+                        {
+                            UserDataDictionary.Add(mes.DialogId, new Dictionary<string, string>() { { "NumBooking", numbooking } });
+                            return true;
+                        }
+                        else
+                        {
+
+                            if (UserDataDictionary[mes.DialogId].ContainsKey("NumBooking"))
+                            {
+                                UserDataDictionary[mes.DialogId]["NumBooking"] = numbooking;
+                            }
+                            else
+                            {
+                                UserDataDictionary[mes.DialogId].Add("NumBooking", numbooking);
+                            }
+                        }
+
+
+                        return true;
+
+
+                    }
+                    else
+                    {
+
+                        clientState[mes.DialogId] = 0;
+                        dialogBookingState[mes.DialogId] = 0;
+                        dialogNewBookingState[mes.DialogId] = 0;
+
+                        return false;
+
+                    }
+                }
                 return false;
             }
 
@@ -494,7 +651,7 @@ namespace TechnicalSupport
                     
                     if (int.TryParse(mes.Text, out numberseat) && numberseat<=44 && numberseat>0)
                     {
-                        if (UserDataDictionary[mes.DialogId].ContainsKey("NumBooking"))
+                        if (UserDataDictionary[mes.DialogId].ContainsKey("NumSeat"))
                         {
                             UserDataDictionary[mes.DialogId]["NumSeat"] = mes.Text;
                         }
