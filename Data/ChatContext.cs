@@ -178,7 +178,7 @@ namespace TechnicalSupport.Data
             {
                 entity.ToTable("Sex");
 
-                entity.Property(e => e.Sex1)
+                entity.Property(e => e.SexName)
                     .IsRequired()
                     .HasMaxLength(100)
                     .HasColumnName("Sex");

@@ -8,6 +8,7 @@ namespace TechnicalSupport.Utils
     public class AuthStatusResult
     {
         public bool isSuccessful { get; set; }
+        public string RoleName { get; set; }
         public bool IncorrectPassword { get; set; }
         public bool IncorrectData { get; set; }
 

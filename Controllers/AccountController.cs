@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TechnicalSupport.Data;
 using TechnicalSupport.Services;
@@ -24,10 +25,13 @@ namespace TechnicalSupport.Controllers
         }
 
 
-
-        [Authorize]
         public IActionResult Index()
         {
+            if(!User.HasClaim( x => x.Type == ClaimTypes.Role))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
             return View();
         }
 
@@ -40,9 +44,10 @@ namespace TechnicalSupport.Controllers
         }
 
 
-        [HttpPost] IActionResult Join(JoinModel model)
+        [HttpPost]
+        public async Task<IActionResult> Join(JoinModel model)
         {
-
+            return View();
         }
 
 
@@ -68,8 +73,11 @@ namespace TechnicalSupport.Controllers
             }
             else
             {
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToRoute(new
+                {
+                    controller = lResult.RoleName,
+                    action = "Index"
+                }); 
 
             }
             
