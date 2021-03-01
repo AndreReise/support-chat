@@ -83,5 +83,48 @@ namespace TechnicalSupport.Services
             }
             
         }
+
+        public Task JoinEmployee(JoinModel model)
+        {
+            return Task.Run(() => JoinEmployeeAsync(model));
+        }
+
+
+        private async Task JoinEmployeeAsync(JoinModel model)
+        {
+
+            var localHash = _cryptoProvider.GetRandomSaltString();
+            var passwordHash = _cryptoProvider.GetPasswordHash(model.PasswordString, localHash);
+
+
+            User user = new User
+            {
+                Email = model.Email,
+                Phone = model.Phone,
+                LocalHash = localHash,
+                PasswordHash = passwordHash,
+                Role = _db.Roles.First(x => x.Name == "EMPLOYEE")
+            };
+
+            Employee employee = new Employee
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Phone = model.Phone,
+                Email = model.Email
+            };
+
+            try
+            {
+                _db.Users.Add(user);
+                _db.Employees.Add(employee);
+
+                await _db.SaveChangesAsync();
+
+            }catch(Exception e)
+            {
+
+            }
+        }
     }
 }

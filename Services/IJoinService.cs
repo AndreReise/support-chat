@@ -11,5 +11,7 @@ namespace TechnicalSupport.Services
         public Task<bool> canJoin(JoinModel model);
 
         public Task JoinUser(JoinModel model);
+
+        public Task JoinEmployee(JoinModel model);
     }
 }

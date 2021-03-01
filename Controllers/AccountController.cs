@@ -17,11 +17,13 @@ namespace TechnicalSupport.Controllers
     {
         private readonly ChatContext _db;
         private readonly IAuthService _authService;
+        private readonly IJoinService _joinService;
 
-        public AccountController(ChatContext db , IAuthService authService)
+        public AccountController(ChatContext db , IAuthService authService , IJoinService joinService)
         {
             _db = db;
             _authService = authService;
+            _joinService = joinService;
         }
 
 
@@ -47,7 +49,18 @@ namespace TechnicalSupport.Controllers
         [HttpPost]
         public async Task<IActionResult> Join(JoinModel model)
         {
-            return View();
+            if(await _joinService.canJoin(model))
+            {
+                await _joinService.JoinUser(model);
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                ViewData["canJoin"] = false;
+                return View();
+            }
+            
         }
 
 
