@@ -60,8 +60,10 @@ namespace TechnicalSupport
 
 
             //Provide operation under user secret data
-            services.AddScoped<ICryptoProvider, CryptoProvider>( (options) =>
-                new CryptoProvider()
+            services.AddSingleton<ICryptoProvider, CryptoProvider>( (options) =>
+                new CryptoProvider(
+                    options.GetRequiredService<IConfiguration>()
+                    )
             );
 
             //Provide user auth service
