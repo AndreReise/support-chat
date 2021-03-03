@@ -8,8 +8,10 @@ namespace TechnicalSupport.Utils
 {
     public class AuthModel
     {
-        [Required]
+        [Required(ErrorMessage = "Empty Data")]
         public string UserString { get; set; } //represent user`s email/phone number data
+
+
         [Required]
         [DataType(DataType.Password)]
         [StringLength(30) , MinLength(6)]
