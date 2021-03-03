@@ -18,14 +18,12 @@ using Microsoft.AspNetCore.SignalR;
 using TechnicalSupport.Models;
 using TechnicalSupport.Services;
 using TechnicalSupport.Data;
-
+using TechnicalSupport.Middleware;
 
 namespace TechnicalSupport
 {
     public class Startup
     {
-        private CultureInfo[] supportedCultures;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -60,17 +58,28 @@ namespace TechnicalSupport
 
             services.AddSingleton<AutoDialog>();
 
-            services.AddControllersWithViews();
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
-            services.AddScoped<ICryptoProvider, CryptoProvider>( (options) =>
-                new CryptoProvider()
+            //Provide operation under user secret data
+            services.AddSingleton<ICryptoProvider, CryptoProvider>( (options) =>
+                new CryptoProvider(
+                    options.GetRequiredService<IConfiguration>()
+                    )
             );
 
+            //Provide user auth service
             services.AddScoped<IAuthService, AuthService>( (options) =>
                 new AuthService(
+                    options.GetRequiredService<ChatContext>(),
+                    options.GetRequiredService<ICryptoProvider>(),
+                    options.GetRequiredService<IHttpContextAccessor>()
+                    )
+            );
+
+            //Provide user join service
+            services.AddScoped<IJoinService, JoinService>((options) =>
+                new JoinService(
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
                     options.GetRequiredService<IHttpContextAccessor>()
@@ -87,6 +96,7 @@ namespace TechnicalSupport
 
             services.AddLocalization((options) => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
+                .AddDataAnnotationsLocalization()
                 .AddViewLocalization();
            
             services.AddSignalR(hubOptions =>
@@ -105,7 +115,8 @@ namespace TechnicalSupport
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-         
+
+            //app.UseMiddleware<CultureMiddleware>();
 
 
             if (env.IsDevelopment())
@@ -118,6 +129,22 @@ namespace TechnicalSupport
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("ru"),
+                new CultureInfo("en")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
+            //app.UseCulture();
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -135,16 +162,8 @@ namespace TechnicalSupport
                 endpoints.MapHub<MessageHub>("/chat");
             });
 
-            var supportedCultures = new[]
-            {
-                new CultureInfo("ru")
-            };
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture("ru"),
-                SupportedCultures = supportedCultures,
-                SupportedUICultures = supportedCultures
-            });
+
+            
         }
     }
 

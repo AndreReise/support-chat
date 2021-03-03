@@ -5,15 +5,23 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace TechnicalSupport.Services
 {
     public class CryptoProvider : ICryptoProvider
     {
+        private readonly IConfiguration _configuration;
+
         private readonly byte[] g_salt;
-        public CryptoProvider()
+        private const int LOCAL_HASH_LENGTH = 10;
+        public CryptoProvider(IConfiguration configuration)
         {
-            //set g_salt
+            _configuration = configuration;
+
+            var sg_salt = _configuration["CryptoSettings:GlobalSalt"];
+
+            g_salt = Encoding.UTF8.GetBytes(sg_salt);
         }
 
         public byte[] GetPasswordHash(string str_password, byte[] l_salt)
@@ -25,11 +33,11 @@ namespace TechnicalSupport.Services
             return GetSHA256Hash(preHash.AddBytes(g_salt));
         }
 
-        public byte[] GetRandomSaltString(int str_length)
+        public byte[] GetRandomSaltString()
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 
-            byte[] random_bytes = new byte[str_length];
+            byte[] random_bytes = new byte[LOCAL_HASH_LENGTH];
             rng.GetBytes(random_bytes);
 
             return random_bytes;

@@ -14,7 +14,7 @@ namespace TechnicalSupport.Models
         }
 
         public int SexId { get; set; }
-        public string Sex1 { get; set; }
+        public string SexName { get; set; }
 
         public virtual ICollection<Employee> Employees { get; set; }
         public virtual ICollection<Client> Users { get; set; }
