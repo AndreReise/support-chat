@@ -95,5 +95,13 @@ namespace TechnicalSupport.Controllers
             }
             
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

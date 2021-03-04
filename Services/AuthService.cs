@@ -146,7 +146,13 @@ namespace TechnicalSupport.Services
         }
         public Task SignOutAsync()
         {
-            throw new NotImplementedException();
+            return Task.Run(() => SignOut());
+        }
+
+        
+        private async Task SignOut()
+        {
+            await AuthenticationHttpContextExtensions.SignOutAsync(_contextAcessor.HttpContext);
         }
     }
 }
