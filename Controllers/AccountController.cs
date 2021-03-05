@@ -51,7 +51,7 @@ namespace TechnicalSupport.Controllers
         {
             if(await _joinService.canJoin(model))
             {
-                await _joinService.JoinUser(model);
+                await _joinService.JoinClient(model);
 
                 return RedirectToAction(nameof(Index));
             }

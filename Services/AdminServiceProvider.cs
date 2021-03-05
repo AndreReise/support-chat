@@ -109,16 +109,43 @@ namespace TechnicalSupport.Services
 
         private async Task<bool> CreateEmployee(JoinEmployeeModel model)
         {
+            if (await _joinService.canJoin((JoinModel)model) == false)
+                return false;
+
+            return await _joinService.JoinEmployee(model);
+        }
+
+
+        public Task<List<Employee>> GetEmployeeListAsync()
+        {
+            return Task.Run(() => GetEmployeeList());
+        }
+
+
+        private async Task<List<Employee>> GetEmployeeList()
+        {
+
+            //Filter unverified employees
+            var employees = _db.Employees.Where(x => x.Email != null && x.Phone != null);
+
+            return await employees.ToListAsync();
 
         }
-        public List<Employee> GetEmployeeListAsync()
+
+
+        public Task<List<Client>> GetClientListAsync()
         {
-            throw new NotImplementedException();
+            return Task.Run(() => GetClientList());
         }
 
-        public List<User> GetUserListAsync()
+
+        private async Task<List<Client>> GetClientList()
         {
-            throw new NotImplementedException();
+
+            var clients = _db.Clients.Where(x => x.Email != null || x.Phone != null);
+
+            return await clients.ToListAsync();
+
         }
     }
 }

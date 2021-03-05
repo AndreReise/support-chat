@@ -55,7 +55,7 @@ namespace TechnicalSupport.Services
 
             var enteredPassword = _cryProvider.GetPasswordHash(model.Password, user.LocalHash);
             //If password is incorrect
-            if( user.PasswordHash.Equals(enteredPassword))
+            if( !user.PasswordHash.SequenceEqual(enteredPassword))
             {
                 _authResult.IncorrectPassword = true;
                 _authResult.isSuccessful = false;
@@ -91,7 +91,7 @@ namespace TechnicalSupport.Services
 
         private async Task< List<Claim>> VerifyUser(User user)
         {
-            switch (1)
+            switch (user.RoleId)
             {
                 case 1:
                     return await CreateClientClaims(user);
@@ -99,6 +99,8 @@ namespace TechnicalSupport.Services
                 case 2:
                     return await CreateEmployeeClaims(user);
                     break;
+                case 3:
+                    return await CreateAdminClaims(user);
                 default:
                     return null;
                     break;
@@ -144,6 +146,20 @@ namespace TechnicalSupport.Services
 
             return claims;
         }
+        
+
+        private async Task<List<Claim>> CreateAdminClaims(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType , user.Email),
+                new Claim(ClaimTypes.Role , "ADMIN")
+            };
+
+            return claims;
+        }
+
+
         public Task SignOutAsync()
         {
             return Task.Run(() => SignOut());

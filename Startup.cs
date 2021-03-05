@@ -84,6 +84,16 @@ namespace TechnicalSupport
                     )
             );
 
+            //Provide methods and features for admin
+            services.AddScoped<IAdminServiceProvider, AdminServiceProvider>((options) =>
+                new AdminServiceProvider(
+                    options.GetRequiredService<ChatContext>(),
+                    options.GetRequiredService<ICryptoProvider>(),
+                    options.GetRequiredService<IJoinService>()
+                    )
+
+            );
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie((options) =>
                 {
