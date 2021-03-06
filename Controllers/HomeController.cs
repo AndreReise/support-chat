@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -29,6 +30,7 @@ namespace TechnicalSupport.Controllers
            // return RedirectToAction("Index", "Account");
 
         }
+ 
 
         public IActionResult Privacy()
         {

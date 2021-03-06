@@ -19,7 +19,7 @@ else
 <div id="header"></div>
 
 
-@if (User.IsInRole("admin"))
+@if (User.IsInRole("EMPLOYEE"))
 {
     <br /><div id="notifyForm">
         <input type="text" id="idDialog" />
@@ -136,7 +136,7 @@ else
     });
 
     // если администратор добавляем блок
-    @if (User.IsInRole("admin"))
+    @if (User.IsInRole("EMPLOYEE"))
     {
         // отправка сообщения от администратора
         <text>

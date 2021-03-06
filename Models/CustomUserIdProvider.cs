@@ -31,11 +31,11 @@ namespace TechnicalSupport.Models
 
             var employees = _chatContext.Employees.Where(x => x.Email != null).Select(x => x).ToList();
             if (employees != null)
-                EmploDictionar = employees.ToDictionary(s => s.Email);
+                EmploDictionar = employees.ToDictionary(s => s.FirstName+s.LastName);
 
             var clients = _chatContext.Clients.Where(x => x.Email != null);
             if (clients != null)
-                UserDictionar = clients.ToDictionary(s => s.Email);
+                UserDictionar = clients.ToDictionary(s => s.FirstName + s.LastName);
 
 
         }
