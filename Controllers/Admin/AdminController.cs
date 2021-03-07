@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,47 +45,89 @@ namespace TechnicalSupport.Controllers.Admin
 
         //
         [HttpGet]
-        public async Task<IActionResult> ClientList()
+        public async Task<IActionResult> Clients()
         {
             ViewBag.Clients = await _adminService.GetClientListAsync();
 
-            return View();
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> ChangeClient(User n_user)
-        {
-            return Ok();
+            return View("Views/Admin/Clients/Clients.cshtml");
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> EmployeeList()
+        public async Task<IActionResult> ChangeClient(int id)
         {
-            return Ok();
+            ViewBag.Client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == id);
+
+            return View("Views/Admin/Clients/ChangeClient.cshtml");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeClient(Client client)
+        {
+            if (ModelState.IsValid)
+            {
+                await _adminService.ChangeClientAsync(client);
+            }
+
+            return RedirectToAction("Clients");
+            
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Employees()
+        {
+            ViewBag.Employees = await _adminService.GetEmployeeListAsync();
+
+            return View("Views/Admin/Employees/Employees.cshtml");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeEmployee(int id)
+        {
+            ViewBag.Employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == id);
+
+            return View("Views/Admin/Employees/ChangeEmployee.cshtml");
         }
 
 
         [HttpPost]
         public async Task<IActionResult> ChangeEmployee(Employee employee)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                await _adminService.ChangeEmployeeAsync(employee);
+
+            }
+
+            return RedirectToAction("Employees");
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> CreateEmployee()
+        public IActionResult CreateEmployee()
         {
+
             return View();
+
         }
 
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateEmployee(JoinModel model)
+        public async Task<IActionResult> CreateEmployee(JoinEmployeeModel model)
         {
-            return RedirectToAction(nameof(EmployeeList));
+
+            if (ModelState.IsValid)
+            {
+
+                await _adminService.CreateEmployeeAsync(model);
+
+            }
+
+            return RedirectToAction(nameof(Employees));
         }
     }
 }

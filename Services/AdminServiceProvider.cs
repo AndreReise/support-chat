@@ -28,6 +28,40 @@ namespace TechnicalSupport.Services
         }
 
 
+        public Task<bool> ChangeClientAsync(Client _client)
+        {
+
+            return Task.Run(() => ChangeClient(_client));
+        }
+
+
+        private async Task<bool> ChangeClient(Client _client)
+        {
+
+            var client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == _client.ClientId);
+
+            if (client == null) return false;
+
+            client.Email = _client.Email;
+            client.Phone = _client.Phone;
+            client.FirstName = _client.FirstName;
+            client.LastName = _client.LastName;
+
+            try
+            {
+                await ChangeUser(_client);
+                await _db.SaveChangesAsync();
+
+                return true;
+
+            }
+            catch(DbUpdateException e)
+            {
+                return false;
+            }
+        }
+
+
         public Task<bool> ChangeEmployeeAsync(Employee employee)
         {
             return Task.Run(() => ChangeEmployee(employee));
@@ -43,18 +77,17 @@ namespace TechnicalSupport.Services
 
             try
             {
-                employee = new Employee
-                {
-                    FirstName = _employee.FirstName,
-                    LastName = _employee.LastName,
+                await ChangeUser(_employee);
 
-                    Phone = _employee.Phone,
-                    Email = _employee.Email
-                };
+
+                employee.FirstName = _employee.FirstName;
+                employee.LastName = _employee.LastName;
+
+                employee.Phone = _employee.Phone;
+                employee.Email = _employee.Email;
 
                 await _db.SaveChangesAsync();
 
-                //if all is well
                 return true;
 
             }
@@ -66,28 +99,41 @@ namespace TechnicalSupport.Services
 
 
         }
-        public Task<bool> ChangeUserAsync(User _user)
+
+
+        private async Task<bool> ChangeUser(Client _client)
         {
-
-            return Task.Run(() => ChangeUser(_user));
-        }
-
-
-        private async Task<bool> ChangeUser(User _user)
-        {
-            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _user.UserId);
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.ClientId);
 
             if (user == null) return false;
 
             try
             {
-                user = new User
-                {
-                    Email = _user.Email,
-                    Phone = _user.Phone,
-                    Role = _user.Role
-                };
+                user.Email = _client.Email;
+                user.Phone = _client.Phone;
 
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException e)
+            {
+                return false;
+            }
+        }
+
+
+        private async Task<bool> ChangeUser(Employee _employee)
+        {
+            var user  = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _employee.EmployeeId);
+
+            if (user == null) return false;
+
+            try
+            {
+
+                user.Email = _employee.Email;
+                user.Phone = _employee.Phone;
 
                 await _db.SaveChangesAsync();
                 return true;
