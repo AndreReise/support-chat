@@ -2,9 +2,18 @@
 
 <h1>Employee list : </h1>
 
-<ul>
+<a asp-action="CreateEmployee">Create Employee</a>
+
+<table class=" table">
+
     @foreach (Employee employee in ViewBag.Employees)
     {
-        <li>@employee.FirstName</li>
+        <tr>
+            <th>@employee.FirstName</th>
+            <th>@employee.LastName </th>
+            <th><a asp-action="ChangeEmployee" asp-controller="Admin" asp-route-id="@employee.EmployeeId">Change</a></th>
+        </tr>
     }
-</ul>
+</table>>
+
+

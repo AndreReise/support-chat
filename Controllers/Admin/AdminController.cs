@@ -70,7 +70,7 @@ namespace TechnicalSupport.Controllers.Admin
                 await _adminService.ChangeClientAsync(client);
             }
 
-            return RedirectToAction("Clients");
+            return RedirectToAction(nameof(Clients));
             
         }
 
@@ -102,7 +102,7 @@ namespace TechnicalSupport.Controllers.Admin
 
             }
 
-            return RedirectToAction("Employees");
+            return RedirectToAction(nameof(Employees));
         }
 
 
@@ -110,7 +110,7 @@ namespace TechnicalSupport.Controllers.Admin
         public IActionResult CreateEmployee()
         {
 
-            return View();
+            return View("Views/Admin/Employees/CreateEmployee.cshtml");
 
         }
 
