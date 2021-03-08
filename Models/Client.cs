@@ -16,7 +16,5 @@ namespace TechnicalSupport.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         public string UserIp { get; set; }
-        public int? Sex { get; set; }
-        public virtual Sex SexNavigation { get; set; }
     }
 }

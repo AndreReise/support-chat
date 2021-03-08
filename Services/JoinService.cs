@@ -107,6 +107,7 @@ namespace TechnicalSupport.Services
 
             Employee employee = new Employee
             {
+                EmployeeGuid = Guid.NewGuid(),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Phone = model.Phone,
@@ -115,14 +116,15 @@ namespace TechnicalSupport.Services
 
             try
             {
-                await JoinUserAsync(model, nameof(Employee));
                 _db.Employees.Add(employee);
+                await JoinUserAsync(model, nameof(Employee));
+                
 
                 await _db.SaveChangesAsync();
 
                 return true;
 
-            }catch(Exception e)
+            }catch(DbUpdateException e)
             {
                 return false;
             }
