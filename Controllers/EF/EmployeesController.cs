@@ -22,7 +22,7 @@ namespace TechnicalSupport.Controllers.EF
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var gL_SupportContext = _context.Employees.Include(e => e.SexNavigation).Include(e => e.WorkTimeNavigation);
+            var gL_SupportContext = _context.Employees.Include(e => e.WorkTimeNavigation);
             return View(await gL_SupportContext.ToListAsync());
         }
 
@@ -35,7 +35,6 @@ namespace TechnicalSupport.Controllers.EF
             }
 
             var employee = await _context.Employees
-                .Include(e => e.SexNavigation)
                 .Include(e => e.WorkTimeNavigation)
                 .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)
@@ -49,7 +48,6 @@ namespace TechnicalSupport.Controllers.EF
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["Sex"] = new SelectList(_context.Sexes, "SexId", "Sex1");
             ViewData["WorkTime"] = new SelectList(_context.WorkTimes, "WorkTimeId", "From");
             ViewData["WorkTimeTo"] = new SelectList(_context.WorkTimes, "WorkTimeId", "To");
             return View();
@@ -68,7 +66,6 @@ namespace TechnicalSupport.Controllers.EF
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Sex"] = new SelectList(_context.Sexes, "SexId", "Sex1", employee.Sex);
             ViewData["WorkTime"] = new SelectList(_context.WorkTimes, "WorkTimeId", "WorkTimeId", employee.WorkTime);
             return View(employee);
         }
@@ -86,7 +83,6 @@ namespace TechnicalSupport.Controllers.EF
             {
                 return NotFound();
             }
-            ViewData["Sex"] = new SelectList(_context.Sexes, "SexId", "Sex1", employee.Sex);
             ViewData["WorkTime"] = new SelectList(_context.WorkTimes, "WorkTimeId", "WorkTimeId", employee.WorkTime);
             return View(employee);
         }
@@ -123,7 +119,6 @@ namespace TechnicalSupport.Controllers.EF
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Sex"] = new SelectList(_context.Sexes, "SexId", "Sex1", employee.Sex);
             ViewData["WorkTime"] = new SelectList(_context.WorkTimes, "WorkTimeId", "WorkTimeId", employee.WorkTime);
             return View(employee);
         }
@@ -137,7 +132,6 @@ namespace TechnicalSupport.Controllers.EF
             }
 
             var employee = await _context.Employees
-                .Include(e => e.SexNavigation)
                 .Include(e => e.WorkTimeNavigation)
                 .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)

@@ -9,7 +9,7 @@
         <form asp-action="ChangeEmployee">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeId" />
+            <input type="hidden" asp-for="EmployeeId" value="@ViewBag.Employee.EmployeeId"/>
 
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>

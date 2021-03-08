@@ -86,6 +86,8 @@ namespace TechnicalSupport.Services
                 employee.Phone = _employee.Phone;
                 employee.Email = _employee.Email;
 
+                employee.Age = _employee.Age;
+
                 await _db.SaveChangesAsync();
 
                 return true;
