@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using support_chat.Utils;
 using System;
@@ -52,7 +54,7 @@ namespace TechnicalSupport.Controllers
         {
             if(await _joinService.canJoin(model))
             {
-                await _joinService.JoinUser(model);
+                await _joinService.JoinEmployee(model);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -95,6 +97,19 @@ namespace TechnicalSupport.Controllers
 
             }
             
+        }
+
+        [Authorize]
+        public IActionResult Employee()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
         }
     }
 }

@@ -37,7 +37,13 @@
 
 <div class="chat header">
     <div>Welcome</div>
-
+    <div id="userNameBlock">
+        Введите ник:<br />
+        <input id="userName" type="text" />
+        <input id="loginBtn" type="button" value="Установить" />
+    </div>
+    <br />
+    <div id="header"></div>
     <span class="enterName"><i class="fas fa-user-edit"></i>;</span>
     <span class="enterEmail"><i class="fas fa-envelope"></i></span>
     <span class="closeChat">&times;</span>
@@ -96,7 +102,7 @@
 
     hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10; // 1 second * 60 * 10 = 10 minutes.
 
-    let userName = "";
+    let userName = "UserDefault";
 
     // получение сообщения от сервера
     hubConnection.on("Receive", function (mes) {
@@ -161,8 +167,7 @@
         document.getElementById("chat-messages").insertBefore(servmessage, firstElem);
 
     });
-    hubConnection.serverTimeoutInMilliseconds = 100000; // 100 second
-
+  
 
     hubConnection.onreconnecting((error) => {
         const status = `Connection lost due to error "${error}". Reconnecting.`;
@@ -188,20 +193,28 @@
     function UserButtonInterracts(elem) {
         //console.dir(elem);
         //либо тут  добавлять
-        hubConnection.invoke("Send", { "Text": this.innerHTML, "Name": this.innerHTML, "SenderType": "in" });
+        hubConnection.invoke("Send", { "Text": this.innerHTML, "Name": userName, "SenderType": "in" });
        
       //  SwapChatPanel();
       //  $(".chat-button-row").empty();
     }
 
- 
+    // установка имени пользователя
+    document.getElementById("loginBtn").addEventListener("click", function (e) {
+        userName = document.getElementById("userName").value;
+        document.getElementById("header").innerHTML = "<h3>Welcome " + userName + "</h3>";
+
+        hubConnection.invoke("SendTechnical", { "Name": userName });
+
+
+    });
 
     // отправка сообщения от простого пользователя
 
 
     document.getElementById("chat-submit").addEventListener("click", function (e) {
         let text = document.getElementById("chat-input").value;
-        hubConnection.invoke("Send", { "Text": text, "Name": text, "SenderType": "in" });
+        hubConnection.invoke("Send", { "Text": text, "Name": userName, "SenderType": "in" });
     });
 
 

@@ -891,19 +891,19 @@ namespace TechnicalSupport
         
         public Message DialogEmployee(Message mes)
         {
-            Employee emp = _context.Employees.Where(w => w.StatusOnline == true & w.Email != "Bot@mail.com").FirstOrDefault();
+           User emp = _context.Users.Where(w=>w.Role.Name == "EMPLOYEE").FirstOrDefault();
 
             if(emp !=null)
             {
-                Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
-                thisDialog.EmployeeId = emp.EmployeeGuid;
+               Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
+                thisDialog.EmployeeId = emp.UserGuid;
                 _context.SaveChanges();
-                mes.Text = $"Перемикаю на оператора {emp.SecondName}";
+                mes.Text = $"Перемикаю на оператора";
             }
             else
             {
                 mes.Text = "На даний момент немає доступних працівників";
-                clientState[mes.DialogId] = 0;
+                clientDictionary[mes.DialogId] = 0;
 
             }
         return mes;

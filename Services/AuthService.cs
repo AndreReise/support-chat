@@ -128,7 +128,7 @@ namespace TechnicalSupport.Services
         }
         private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == user.RoleId);
+            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.Email == user.Email);
 
             if(employee == null)
             {
