@@ -37,10 +37,7 @@ namespace TechnicalSupport
 
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 70c068901c79b0933a9ec00acb677d5a751694c1
             string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
            // string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
 

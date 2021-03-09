@@ -672,9 +672,6 @@ namespace TechnicalSupport
 
 
 
-
-                return false;
-
            }
             bool ValidationTwo(Message mes)
             {
