@@ -17,10 +17,13 @@ namespace TechnicalSupport.Services
 
     public class AuthService : IAuthService
     {
+
         private ChatContext _db;
         private readonly CryptoProvider _cryProvider;
         private readonly IHttpContextAccessor _contextAcessor;
         private AuthStatusResult _authResult;
+
+
         public AuthService(ChatContext dbContext , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
         {
             _db = dbContext;
@@ -30,35 +33,43 @@ namespace TechnicalSupport.Services
 
         }
 
+
         public Task<AuthStatusResult> AuthenticateUserAsync(AuthModel model)
         {
             return Task.Run(() => AuthenticateUser(model));
         }
 
+
         private async Task<AuthStatusResult> AuthenticateUser(AuthModel model)
         {
-            if(model.UserString == "test")
-            {
-                var id = new ClaimsIdentity(new List<Claim> { new Claim(ClaimsIdentity.DefaultNameClaimType, "Name") }, "ApplicationCookie");
-                var cp = new ClaimsPrincipal(id);
-                await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, cp);
-                return _authResult;
-            }
+
             var user = await _db.Users.SingleOrDefaultAsync(x => x.Phone == model.UserString || x.Email == model.UserString);
 
+            //If user write email/phone that doesnt exist in db
             if(user == null)
             {
-                _authResult.ErrorMessage = "User not found";
+                _authResult.IncorrectData = true;
                 _authResult.isSuccessful = false;
 
                 return _authResult;
             }
 
+            var enteredPassword = _cryProvider.GetPasswordHash(model.Password, user.LocalHash);
+            //If password is incorrect
+            if( user.PasswordHash.Equals(enteredPassword))
+            {
+                _authResult.IncorrectPassword = true;
+                _authResult.isSuccessful = false;
+
+                return _authResult;
+            }
+            
+            //all credentials are true
             List<Claim> userClaims = await VerifyUserAsync(user);
 
             if(userClaims == null)
             {
-                _authResult.ErrorMessage = "Wrong Credentials";
+                _authResult.IncorrectData = true;
                 _authResult.isSuccessful = false;
 
                 return _authResult;

@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Empty Data" xml:space="preserve">
-    <value>Не введены данные</value>
+    <value>Empty data</value>
   </data>
   <data name="Incorrect Data" xml:space="preserve">
-    <value>Введены неверные данные</value>
+    <value>Incorrect data</value>
   </data>
   <data name="Incorrect Password" xml:space="preserve">
-    <value>Неверный пароль</value>
+    <value>Incorrect password</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Введите пароль</value>
+    <value>Enter password</value>
   </data>
   <data name="UserString" xml:space="preserve">
-    <value>Введите номер телефона или эл.почту</value>
+    <value>Enter phone number or email</value>
   </data>
 </root>
