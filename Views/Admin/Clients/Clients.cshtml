@@ -1,0 +1,17 @@
+﻿
+<h1>Client list : </h1>
+
+
+<table class=" table">
+
+    @foreach (Client client in ViewBag.Clients)
+    {
+        <tr>
+            <th>@client.FirstName</th>
+            <th>@client.LastName </th>
+            <th><a asp-action="ChangeClient" asp-controller="Admin" asp-route-id="@client.ClientId">Change</a></th>
+        </tr>
+    }
+</table>>
+
+    

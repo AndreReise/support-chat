@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
@@ -14,12 +15,13 @@ namespace TechnicalSupport.Models
         }
 
         public int EmployeeId { get; set; }
+        [AllowNull]
         public Guid EmployeeGuid { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string SecondName { get; set; }
 
-
+        [AllowNull]
         public bool StatusOnline { get; set; }
 
 
@@ -27,11 +29,9 @@ namespace TechnicalSupport.Models
         public string Phone { get; set; }
         public string Email { get; set; }
 
-
-        public int Sex { get; set; }
+        [AllowNull]
         public int WorkTime { get; set; }
-
-        public virtual Sex SexNavigation { get; set; }
+        [AllowNull]
         public virtual WorkTime WorkTimeNavigation { get; set; }
         public virtual ICollection<EmployeeTask> Tasks { get; set; }
     }

@@ -56,7 +56,7 @@ namespace TechnicalSupport.Services
 
             var enteredPassword = _cryProvider.GetPasswordHash(model.Password, user.LocalHash);
             //If password is incorrect
-            if(!user.PasswordHash.SequenceEqual(enteredPassword))
+            if( !user.PasswordHash.SequenceEqual(enteredPassword))
             {
                 _authResult.IncorrectPassword = true;
                 _authResult.isSuccessful = false;
@@ -92,17 +92,19 @@ namespace TechnicalSupport.Services
 
         private async Task< List<Claim>> VerifyUser(User user)
         {
-            switch (2)
+            switch (user.RoleId)
             {
                 case 1:
                     return await CreateClientClaims(user);
-                   
+                    break;
                 case 2:
                     return await CreateEmployeeClaims(user);
-                   
+                    break;
+                case 3:
+                    return await CreateAdminClaims(user);
                 default:
                     return null;
-                    
+                    break;
             }
         }
 
@@ -128,7 +130,7 @@ namespace TechnicalSupport.Services
         }
         private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.Email == user.Email);
+            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == user.RoleId);
 
             if(employee == null)
             {
@@ -145,9 +147,29 @@ namespace TechnicalSupport.Services
 
             return claims;
         }
+        
+
+        private async Task<List<Claim>> CreateAdminClaims(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType , user.Email),
+                new Claim(ClaimTypes.Role , "ADMIN")
+            };
+
+            return claims;
+        }
+
+
         public Task SignOutAsync()
         {
-            throw new NotImplementedException();
+            return Task.Run(() => SignOut());
+        }
+
+        
+        private async Task SignOut()
+        {
+            await AuthenticationHttpContextExtensions.SignOutAsync(_contextAcessor.HttpContext);
         }
     }
 }

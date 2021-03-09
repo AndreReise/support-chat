@@ -7,7 +7,7 @@ namespace TechnicalSupport.Models
 {
     public partial class Detail
     {
-        public int DetailsId { get; set; }
+        public int DetailId { get; set; }
         public DateTime CreatingDate { get; set; }
         public string Data { get; set; }
         public int? Chat { get; set; }

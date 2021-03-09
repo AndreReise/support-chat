@@ -36,13 +36,15 @@ namespace TechnicalSupport
         {
 
 
-
-
-            string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-           // string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
-
+            //string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SupportChat;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
+            string serviceConnection = @"Data Source=.;Initial Catalog=chat_service_db;Integrated Security=True";
             services.AddDbContext<ChatContext>(options => options.UseSqlServer(connection),
                  ServiceLifetime.Singleton
+                );
+
+            services.AddDbContext<ChatServiceContext>(options => options.UseSqlServer(serviceConnection),
+                ServiceLifetime.Singleton
                 );
 
 
@@ -87,6 +89,17 @@ namespace TechnicalSupport
                     )
             );
 
+            //Provide methods and features for admin
+            services.AddScoped<IAdminServiceProvider, AdminServiceProvider>((options) =>
+                new AdminServiceProvider(
+                    options.GetRequiredService<ChatContext>(),
+                    options.GetRequiredService<ChatServiceContext>(),
+                    options.GetRequiredService<ICryptoProvider>(),
+                    options.GetRequiredService<IJoinService>()
+                    )
+
+            );
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie((options) =>
                 {
@@ -103,7 +116,7 @@ namespace TechnicalSupport
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(10);
+                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(3);
                 hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(10);
                 hubOptions.MaximumReceiveMessageSize = 102400000;
                 

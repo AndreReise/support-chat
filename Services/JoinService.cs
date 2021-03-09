@@ -39,14 +39,15 @@ namespace TechnicalSupport.Services
         }
 
 
-        public Task JoinUser(JoinModel model)
+        public Task JoinClient(JoinModel model)
         {
-            return Task.Run(() => JoinUserAsync(model));
+            return Task.Run(() => JoinClientAsync(model));
         }
 
 
-        private async Task JoinUserAsync(JoinModel model)
+        private async Task JoinUserAsync(JoinModel model , string type)
         {
+
             var localHash = _cryptoProvider.GetRandomSaltString();
             var passwordHash = _cryptoProvider.GetPasswordHash(model.PasswordString, localHash);
 
@@ -56,8 +57,16 @@ namespace TechnicalSupport.Services
                 Phone = model.Phone,
                 LocalHash = localHash,
                 PasswordHash = passwordHash,
-                Role = _db.Roles.First(x => x.Name == "CLIENT")
+                Role = _db.Roles.First(x => x.Name == type.ToUpper())
             };
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+        }
+
+
+        private async Task JoinClientAsync(JoinModel model)
+        {
 
             Client client = new Client
             {
@@ -72,7 +81,7 @@ namespace TechnicalSupport.Services
 
             try
             {
-                _db.Users.Add(user);
+                await JoinUserAsync(model , nameof(Client));
                 _db.Clients.Add(client);
 
                 await _db.SaveChangesAsync();
@@ -84,30 +93,21 @@ namespace TechnicalSupport.Services
             
         }
 
-        public Task JoinEmployee(JoinModel model)
+        public Task<bool> JoinEmployee(JoinEmployeeModel model)
         {
             return Task.Run(() => JoinEmployeeAsync(model));
         }
 
 
-        private async Task JoinEmployeeAsync(JoinModel model)
+        private async Task<bool> JoinEmployeeAsync(JoinEmployeeModel model)
         {
 
             var localHash = _cryptoProvider.GetRandomSaltString();
             var passwordHash = _cryptoProvider.GetPasswordHash(model.PasswordString, localHash);
 
-
-            User user = new User
-            {
-                Email = model.Email,
-                Phone = model.Phone,
-                LocalHash = localHash,
-                PasswordHash = passwordHash,
-                Role = _db.Roles.First(x => x.Name == "EMPLOYEE")
-            };
-
             Employee employee = new Employee
             {
+                EmployeeGuid = Guid.NewGuid(),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Phone = model.Phone,
@@ -116,13 +116,42 @@ namespace TechnicalSupport.Services
 
             try
             {
-                _db.Users.Add(user);
                 _db.Employees.Add(employee);
+                await JoinUserAsync(model, nameof(Employee));
+                
 
                 await _db.SaveChangesAsync();
 
-            }catch(Exception e)
+                return true;
+
+            }catch(DbUpdateException e)
             {
+                return false;
+            }
+
+        }
+
+
+        public Task<bool> JoinAdmin(JoinModel model)
+        {
+
+            return Task.Run(() => JoinAdminAsync(model));
+        }
+
+
+        private async Task<bool> JoinAdminAsync(JoinModel model)
+        {
+
+            try
+            {
+                await JoinUserAsync(model, "ADMIN");
+
+                return true;
+            }
+            catch (DbUpdateException e)
+            {
+
+                return false;
 
             }
         }
