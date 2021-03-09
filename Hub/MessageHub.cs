@@ -55,7 +55,7 @@ namespace TechnicalSupport
                 }
                 else
                 {
-
+                    message.SenderType = "out";
                     await Clients.User(dialog.EmployeeId.ToString()).SendAsync("Receive", message);
                 }
 
@@ -88,7 +88,6 @@ namespace TechnicalSupport
 
 
             }
-
 
 
 
@@ -100,77 +99,18 @@ namespace TechnicalSupport
         public async Task SendTechnical(Message message)
         {
 
-            var dialog = _context.Dialogs.FirstOrDefault(em => em.UserId.ToString() == Context.UserIdentifier);
-
-            if (dialog != null)
-            {
-
-              
-
-                message.SenderType = "in";
-                message.DialogId = dialog.DialogId;
-                message.ClientId = dialog.UserId;
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", message);
-
-                if (dialog.EmployeeId == Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b"))
-                {
-
-                    Message repmes = _autoDialog.ReplyMessage(message);
-
-                    message.SenderType = "out";
-
-                    await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", repmes);
-                }
-                else
-                {
-
-                    await Clients.User(dialog.EmployeeId.ToString()).SendAsync("Receive", message);
-                }
-
-             
-
-
-            }
-            else
-            {
-              
-                Guid dialogId = Guid.NewGuid();
-
-                Dialog temp = new Dialog() { UserId = Guid.Parse(Context.UserIdentifier), DialogId = dialogId, EmployeeId = Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b") };
-                _context.Dialogs.Add(temp);
-                _context.SaveChanges();
-
-                message.DialogId = dialogId;
-
-
-                message.SenderType = "in";
-
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", message);
-
-                Message repmes = _autoDialog.ReplyMessage(message);
-
-                message.SenderType = "out";
-
-                await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", repmes);
-
-
-
-            }
-
-
-
-
+         
 
         }
 
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "EMPLOYEE")]
         public async Task SendAdmin (Message message)
         {
             if (Context.User.Identity.IsAuthenticated)
 
             {
-              
+                message.SenderType = "in";
                 await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", message);
                 var dialog = _context.Dialogs.Find(message.DialogId);
                 if (dialog != null)
@@ -187,16 +127,16 @@ namespace TechnicalSupport
         public override async Task OnConnectedAsync()
         {
 
-            if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "admin"))
+            if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "EMPLOYEE"))
             {
                 Employee employee = await _context.Employees
                   //.Include(u => u.Role)
-                  .SingleOrDefaultAsync(u => u.Email == Context.User.Identity.Name);
+                  .SingleOrDefaultAsync(u => u.FirstName+u.LastName == Context.User.Identity.Name);
 
                 if (employee != null)
                 {
                     employee.StatusOnline = true;
-                    await Clients.User(employee.EmployeeId.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = "Hello Admin" });
+                    await Clients.User(employee.EmployeeId.ToString()).SendAsync("Receive", new Message() { Name = employee.FirstName, Text = "Hello Admin" });
 
                 }
 
@@ -215,34 +155,21 @@ namespace TechnicalSupport
                             {
 
                                Guid guidDialog = Guid.NewGuid();
-                               Employee name = _context.Employees.Where(e => e.StatusOnline == true).FirstOrDefault();
-                               await Clients.User(user.UserId.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = name != null ? " Hello user":"No available employees!", DialogId = guidDialog });
-
-                                
-                                if (name != null)
-                                {
-
-                                    _context.Dialogs.Add(new Dialog() { UserId = user.UserGuid, DialogId = guidDialog, EmployeeId = name.EmployeeGuid });
-
-                                }
-                                else
-                                {
-                 
-
-                                }
+                              
+                               await Clients.User(Context.UserIdentifier.ToString()).SendAsync("Receive", new Message() { Name = "UserDefault", Text = " Hello user", DialogId = guidDialog });
 
 
-                    }
-
+                            }
+                           
                      }
                      else
                      {
-                              Guid Id = Guid.Parse(Context.UserIdentifier);
-                              _context.Users.Add(new User() { UserGuid = Id });
-                              Guid dialogId = Guid.NewGuid();
-                              Dialog temp = new Dialog() { UserId = Guid.Parse(Context.UserIdentifier), DialogId = dialogId, EmployeeId = Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b") };
-                              _context.Dialogs.Add(temp);
-                              await Clients.User(Id.ToString()).SendAsync("Receive", new Message() { Name = "Bot", Text = "Hello user", DialogId = dialogId });
+                        Guid Id = Guid.Parse(Context.UserIdentifier);
+                        _context.Users.Add(new User() { UserGuid = Id });
+                        Guid dialogId = Guid.NewGuid();
+                        Dialog temp = new Dialog() { UserId = Guid.Parse(Context.UserIdentifier), DialogId = dialogId, EmployeeId = Guid.Parse("a839ea3e-1c14-45c4-95bb-529b7cad712b") };
+                        _context.Dialogs.Add(temp);
+                        await Clients.User(Id.ToString()).SendAsync("Receive", new Message() { Name = "UserDefault", Text = "Hello user", DialogId = dialogId });
 
                      
                     }
@@ -260,7 +187,7 @@ namespace TechnicalSupport
         public override async Task OnDisconnectedAsync(Exception exception)
         {
 
-            if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "admin"))
+            if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == "EMPLOYEE"))
             {
                 Employee employee = await _context.Employees
               .SingleOrDefaultAsync(u => u.EmployeeGuid == Guid.Parse(Context.UserIdentifier));

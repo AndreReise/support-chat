@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src=@Url.Content("~/lib/aspnet/signalr/dist/browser/signalr.js")></script>
+    <link rel="stylesheet" href="~/css/_chat.css" />
+    <link href="~/css/EmployeePage.css" rel="stylesheet" />
+    <script src=@Url.Content("~/js/EmployeePage.js")></script>
+
+
 </head>                       
 <body>
     <header>
@@ -22,6 +27,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">My Account</a>
                         </li>
+                    @if (User.IsInRole("EMPLOYEE"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Employee">Employee Page</a>
+                        </li>
+                    }
                     </ul>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>TechnicalSupport</RootNamespace>
+    <RootNamespace>support_chat</RootNamespace>
     <AssemblyName>TechnicalSupport</AssemblyName>
   </PropertyGroup>
 
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Admin\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

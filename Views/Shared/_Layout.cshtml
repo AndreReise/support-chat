@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/_chat.css" />
     <script src=@Url.Content("~/lib/aspnet/signalr/dist/browser/signalr.js")></script>
+
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
     <link href="~/css/Employee.css" rel="stylesheet" />
+
+
 </head>
 <body>
     <header>
@@ -26,6 +29,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">My Account</a>
                         </li>
+                        @if (User.IsInRole("EMPLOYEE"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Employee">Employee Page</a>
+                            </li>
+                        }
+
 
                     </ul>
                 </div>
