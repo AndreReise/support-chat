@@ -129,5 +129,33 @@ namespace TechnicalSupport.Controllers.Admin
 
             return RedirectToAction(nameof(Employees));
         }
+
+
+        [HttpGet]
+        public IActionResult CreateAdmin()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAdmin(JoinAdminModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _adminService.CreateAdminAsync(model);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        
+        [HttpGet]
+        public async Task<IActionResult> CreateTokens()
+        {
+            await _adminService.CreateTokensAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

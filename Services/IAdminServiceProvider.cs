@@ -19,5 +19,9 @@ namespace TechnicalSupport.Services
 
         public Task<bool> ChangeEmployeeAsync(Employee _employee);
 
+        public Task<bool> CreateAdminAsync(JoinAdminModel model);
+
+        public Task CreateTokensAsync();
+
     }
 }

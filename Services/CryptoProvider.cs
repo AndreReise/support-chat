@@ -13,15 +13,21 @@ namespace TechnicalSupport.Services
     {
         private readonly IConfiguration _configuration;
 
-        private readonly byte[] g_salt;
+        private readonly byte[] global_salt;
+        private readonly byte[] token_salt;
+
         private const int LOCAL_HASH_LENGTH = 10;
         public CryptoProvider(IConfiguration configuration)
         {
             _configuration = configuration;
 
+            //string global salt
             var sg_salt = _configuration["CryptoSettings:GlobalSalt"];
+            //string token salt
+            var st_salt = _configuration["CryptoSettings:TokenSalt"];
 
-            g_salt = Encoding.UTF8.GetBytes(sg_salt);
+            global_salt = Encoding.UTF8.GetBytes(sg_salt);
+            token_salt = Encoding.UTF8.GetBytes(st_salt);
         }
 
         public byte[] GetPasswordHash(string str_password, byte[] l_salt)
@@ -30,7 +36,7 @@ namespace TechnicalSupport.Services
 
             var preHash = GetSHA256Hash(pass_bytes.AddBytes(l_salt));
 
-            return GetSHA256Hash(preHash.AddBytes(g_salt));
+            return GetSHA256Hash(preHash.AddBytes(global_salt));
         }
 
         public byte[] GetRandomSaltString()
@@ -49,6 +55,19 @@ namespace TechnicalSupport.Services
 
             byte[] hash = encoder.ComputeHash(target);
             return hash;
+        }
+
+
+
+        public byte[] GetTokenBytes(string str_token)
+        {
+            using var encoder = SHA256Managed.Create();
+
+            byte[] byteToken = Encoding.UTF8.GetBytes(str_token);
+
+            byte[] tokenHash = encoder.ComputeHash(byteToken);
+
+            return GetSHA256Hash(tokenHash.AddBytes(token_salt));
         }
     }
 }

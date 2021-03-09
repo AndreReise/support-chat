@@ -1,27 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TechnicalSupport.Data;
 using TechnicalSupport.Models;
+using TechnicalSupport.Models.ServiceModels;
 using TechnicalSupport.Utils;
 
 namespace TechnicalSupport.Services
 {
-    public class AdminServiceProvider : IAdminServiceProvider
+    public class AdminServiceProvider : IAdminServiceProvider 
     {
+        private const int NTOKENS = 10;
 
         private readonly ChatContext _db;
+        private readonly ChatServiceContext _serviceDb;
         private readonly ICryptoProvider _cryptoProvider;
         private readonly IJoinService _joinService;
 
 
-        public AdminServiceProvider(ChatContext context,
+        public AdminServiceProvider(ChatContext context, ChatServiceContext serviceDb,
             ICryptoProvider cryptoProvider , IJoinService joinService)
         {
 
             _db = context;
+            _serviceDb = serviceDb;
             _cryptoProvider = cryptoProvider;
             _joinService = joinService;
 
@@ -180,7 +185,6 @@ namespace TechnicalSupport.Services
 
         }
 
-
         public Task<List<Client>> GetClientListAsync()
         {
             return Task.Run(() => GetClientList());
@@ -194,6 +198,74 @@ namespace TechnicalSupport.Services
 
             return await clients.ToListAsync();
 
+        }
+
+
+        public Task<bool> CreateAdminAsync(JoinAdminModel model)
+        {
+
+            return Task.Run(() => CreateAdmin(model));
+        }
+
+
+        private async Task<bool> CreateAdmin(JoinAdminModel model)
+        {
+            var byteKey = _cryptoProvider.GetTokenBytes(model.AccessToken);
+
+            var token = await _serviceDb.AdminTokens.SingleOrDefaultAsync(x => x.TokenData.SequenceEqual(byteKey));
+
+            if (token == null || token.isUsed == true) return false;
+
+            token.isUsed = true;
+            await _serviceDb.SaveChangesAsync();
+
+            return await _joinService.JoinAdmin(model);
+
+        }
+
+
+        public Task CreateTokensAsync()
+        {
+
+            return Task.Run(() => CreateTokens());
+
+        }
+
+
+        private async Task CreateTokens()
+        {
+            List<string> sTokens = new List<string>();
+
+            using FileStream fileStream = new FileStream("tokens.txt", FileMode.OpenOrCreate);
+            using StreamWriter writer = new StreamWriter(fileStream);
+
+            for (int i = 0; i < NTOKENS; i++)
+            {
+                sTokens.Add(Extensions.Extensions.GetRandomString(10));
+
+            }
+
+
+            foreach (var token in sTokens)
+            {
+
+                try
+                {
+                    writer.WriteLine(token);
+
+                    _serviceDb.AdminTokens.Add(new AdminToken
+                    {
+                        TokenData = _cryptoProvider.GetTokenBytes(token),
+                        isUsed = false
+                    });
+
+                    await _serviceDb.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
     }
 }
