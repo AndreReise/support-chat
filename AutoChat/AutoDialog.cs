@@ -903,7 +903,7 @@ namespace TechnicalSupport
             else
             {
                 mes.Text = "На даний момент немає доступних працівників";
-                clientDictionary[mes.DialogId] = 0;
+                clientState[mes.DialogId] = 0;
 
             }
         return mes;
