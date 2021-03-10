@@ -3,10 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TechnicalSupport.Migrations
 {
-    public partial class second : Migration
+    public partial class three : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    ChatId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Guidemployee = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Guiduser = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.ChatId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
@@ -20,14 +34,37 @@ namespace TechnicalSupport.Migrations
                     Age = table.Column<int>(type: "int", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SexId = table.Column<int>(type: "int", nullable: true),
-                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    LocalHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    UserIp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clients", x => x.ClientId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunicationTypes",
+                columns: table => new
+                {
+                    CommunicationTypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommunicationType1 = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunicationTypes", x => x.CommunicationTypeId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestTypes",
+                columns: table => new
+                {
+                    RequestTypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestType1 = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestTypes", x => x.RequestTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -41,19 +78,6 @@ namespace TechnicalSupport.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sexes",
-                columns: table => new
-                {
-                    SexId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Sex1 = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sexes", x => x.SexId);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,30 +95,65 @@ namespace TechnicalSupport.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Details",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoleId = table.Column<int>(type: "int", nullable: true),
-                    SexNavigationSexId = table.Column<int>(type: "int", nullable: true)
+                    DetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Chat = table.Column<int>(type: "int", nullable: true),
+                    RequestType = table.Column<int>(type: "int", nullable: true),
+                    CommunicationType = table.Column<int>(type: "int", nullable: true),
+                    Guidinteracting = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ChatNavigationChatId = table.Column<int>(type: "int", nullable: true),
+                    CommunicationTypeNavigationCommunicationTypeId = table.Column<int>(type: "int", nullable: true),
+                    RequestTypeNavigationRequestTypeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Details", x => x.DetailId);
+                    table.ForeignKey(
+                        name: "FK_Details_Chats_ChatNavigationChatId",
+                        column: x => x.ChatNavigationChatId,
+                        principalTable: "Chats",
+                        principalColumn: "ChatId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Details_CommunicationTypes_CommunicationTypeNavigationCommunicationTypeId",
+                        column: x => x.CommunicationTypeNavigationCommunicationTypeId,
+                        principalTable: "CommunicationTypes",
+                        principalColumn: "CommunicationTypeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Details_RequestTypes_RequestTypeNavigationRequestTypeId",
+                        column: x => x.RequestTypeNavigationRequestTypeId,
+                        principalTable: "RequestTypes",
+                        principalColumn: "RequestTypeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    LocalHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Users_Sexes_SexNavigationSexId",
-                        column: x => x.SexNavigationSexId,
-                        principalTable: "Sexes",
-                        principalColumn: "SexId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -102,36 +161,22 @@ namespace TechnicalSupport.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StatusOnline = table.Column<bool>(type: "bit", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecondName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatusOnline = table.Column<bool>(type: "bit", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SexId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<int>(type: "int", nullable: false),
                     WorkTimeNavigationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Employees_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employees_Sexes_SexId",
-                        column: x => x.SexId,
-                        principalTable: "Sexes",
-                        principalColumn: "SexId",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
                     table.ForeignKey(
                         name: "FK_Employees_WorkTimes_WorkTimeNavigationId",
                         column: x => x.WorkTimeNavigationId,
@@ -146,23 +191,25 @@ namespace TechnicalSupport.Migrations
                 {
                     DialogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId1 = table.Column<int>(type: "int", nullable: true),
+                    EmployeeId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dialogs", x => x.DialogId);
                     table.ForeignKey(
-                        name: "FK_Dialogs_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_Dialogs_Employees_EmployeeId1",
+                        column: x => x.EmployeeId1,
                         principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Dialogs_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Dialogs_Users_UserId1",
+                        column: x => x.UserId1,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,41 +220,17 @@ namespace TechnicalSupport.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskCount = table.Column<int>(type: "int", nullable: false),
                     Guidemployy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GuidemployyNavigationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    GuidemployyNavigationEmployeeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tasks_Employees_GuidemployyNavigationId",
-                        column: x => x.GuidemployyNavigationId,
+                        name: "FK_Tasks_Employees_GuidemployyNavigationEmployeeId",
+                        column: x => x.GuidemployyNavigationEmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id",
+                        principalColumn: "EmployeeId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SenderType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RedirectTo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DialogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Dialogs_DialogId",
-                        column: x => x.DialogId,
-                        principalTable: "Dialogs",
-                        principalColumn: "DialogId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,11 +263,18 @@ namespace TechnicalSupport.Migrations
                     Topic = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Chat = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    StatusNavigationId = table.Column<int>(type: "int", nullable: true)
+                    StatusNavigationId = table.Column<int>(type: "int", nullable: true),
+                    ChatId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Applications", x => x.ApplicationId);
+                    table.ForeignKey(
+                        name: "FK_Applications_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "ChatId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Applications_Statuses_StatusNavigationId",
                         column: x => x.StatusNavigationId,
@@ -254,39 +284,44 @@ namespace TechnicalSupport.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Applications_ChatId",
+                table: "Applications",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Applications_StatusNavigationId",
                 table: "Applications",
                 column: "StatusNavigationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dialogs_EmployeeId",
+                name: "IX_Details_ChatNavigationChatId",
+                table: "Details",
+                column: "ChatNavigationChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Details_CommunicationTypeNavigationCommunicationTypeId",
+                table: "Details",
+                column: "CommunicationTypeNavigationCommunicationTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Details_RequestTypeNavigationRequestTypeId",
+                table: "Details",
+                column: "RequestTypeNavigationRequestTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dialogs_EmployeeId1",
                 table: "Dialogs",
-                column: "EmployeeId");
+                column: "EmployeeId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dialogs_UserId",
+                name: "IX_Dialogs_UserId1",
                 table: "Dialogs",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_RoleId",
-                table: "Employees",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_SexId",
-                table: "Employees",
-                column: "SexId");
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_WorkTimeNavigationId",
                 table: "Employees",
                 column: "WorkTimeNavigationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_DialogId",
-                table: "Messages",
-                column: "DialogId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Statuses_DialogId",
@@ -295,19 +330,14 @@ namespace TechnicalSupport.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_GuidemployyNavigationId",
+                name: "IX_Tasks_GuidemployyNavigationEmployeeId",
                 table: "Tasks",
-                column: "GuidemployyNavigationId");
+                column: "GuidemployyNavigationEmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_SexNavigationSexId",
-                table: "Users",
-                column: "SexNavigationSexId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -319,13 +349,22 @@ namespace TechnicalSupport.Migrations
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "Details");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Statuses");
+
+            migrationBuilder.DropTable(
+                name: "Chats");
+
+            migrationBuilder.DropTable(
+                name: "CommunicationTypes");
+
+            migrationBuilder.DropTable(
+                name: "RequestTypes");
 
             migrationBuilder.DropTable(
                 name: "Dialogs");
@@ -341,9 +380,6 @@ namespace TechnicalSupport.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
-
-            migrationBuilder.DropTable(
-                name: "Sexes");
         }
     }
 }

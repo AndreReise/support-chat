@@ -33,9 +33,9 @@ namespace TechnicalSupport.Models
             if (employees != null)
                 EmploDictionar = employees.ToDictionary(s => s.FirstName+s.LastName);
 
-            var clients = _chatContext.Clients.Where(x => x.Email != null);
-            if (clients != null)
-                UserDictionar = clients.ToDictionary(s => s.FirstName + s.LastName);
+          //  var clients = _chatContext.Clients.Where(x => x.Email != null);
+         //   if (clients != null)
+          //      UserDictionar = clients.ToDictionary(s => s.FirstName + s.LastName);
 
 
         }
@@ -56,10 +56,10 @@ namespace TechnicalSupport.Models
 
               
 
-                if (UserDictionar.ContainsKey(connection.User.Identity.Name))
-                {
-                  id = UserDictionar[connection.User.Identity.Name].ClientGuid;
-                }
+              //  if (UserDictionar.ContainsKey(connection.User.Identity.Name))
+             //   {
+             //     id = UserDictionar[connection.User.Identity.Name].ClientGuid;
+             //   }
 
                 id = id != null ? id : Guid.NewGuid();
 

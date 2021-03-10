@@ -10,14 +10,13 @@ using TechnicalSupport.Data;
 namespace TechnicalSupport.Migrations
 {
     [DbContext(typeof(ChatContext))]
-    [Migration("20210303200430_two")]
-    partial class two
+    [Migration("20210310132602_three")]
+    partial class three
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -36,21 +35,21 @@ namespace TechnicalSupport.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatusNavigationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Topic")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ApplicationId");
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("StatusNavigationId");
 
-                    b.ToTable("Application");
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Chat", b =>
@@ -61,16 +60,14 @@ namespace TechnicalSupport.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<Guid?>("Guidemployee")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("GUIDEmployee");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("Guiduser")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("GUIDUser");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ChatId");
 
-                    b.ToTable("Chat");
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Client", b =>
@@ -87,37 +84,26 @@ namespace TechnicalSupport.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(22)
-                        .HasColumnType("nvarchar(22)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecondName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("Sex")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIp")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ClientId");
 
-                    b.HasIndex("Sex");
-
-                    b.ToTable("User");
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.CommunicationType", b =>
@@ -128,19 +114,16 @@ namespace TechnicalSupport.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CommunicationType1")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("CommunicationType");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CommunicationTypeId");
 
-                    b.ToTable("CommunicationType");
+                    b.ToTable("CommunicationTypes");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Detail", b =>
                 {
-                    b.Property<int>("DetailsId")
+                    b.Property<int>("DetailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -148,33 +131,37 @@ namespace TechnicalSupport.Migrations
                     b.Property<int?>("Chat")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ChatNavigationChatId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("CommunicationType")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CommunicationTypeNavigationCommunicationTypeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatingDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Data")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Guidinteracting")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("GUIDInteracting");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("RequestType")
                         .HasColumnType("int");
 
-                    b.HasKey("DetailsId")
-                        .HasName("PK__Details__BAC8628C5494B5B4");
+                    b.Property<int?>("RequestTypeNavigationRequestTypeId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Chat");
+                    b.HasKey("DetailId");
 
-                    b.HasIndex("CommunicationType");
+                    b.HasIndex("ChatNavigationChatId");
 
-                    b.HasIndex("RequestType");
+                    b.HasIndex("CommunicationTypeNavigationCommunicationTypeId");
+
+                    b.HasIndex("RequestTypeNavigationRequestTypeId");
 
                     b.ToTable("Details");
                 });
@@ -217,33 +204,22 @@ namespace TechnicalSupport.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("EmployeeGuid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("EmployeeGUID")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(22)
-                        .HasColumnType("nvarchar(22)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecondName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Sex")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("StatusOnline")
                         .HasColumnType("bit");
@@ -251,16 +227,14 @@ namespace TechnicalSupport.Migrations
                     b.Property<int>("WorkTime")
                         .HasColumnType("int");
 
+                    b.Property<int?>("WorkTimeNavigationId")
+                        .HasColumnType("int");
+
                     b.HasKey("EmployeeId");
 
-                    b.HasIndex("Sex");
+                    b.HasIndex("WorkTimeNavigationId");
 
-                    b.HasIndex("WorkTime");
-
-                    b.HasIndex(new[] { "EmployeeGuid" }, "IX_EmployeeGUID")
-                        .IsUnique();
-
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.EmployeeTask", b =>
@@ -271,19 +245,19 @@ namespace TechnicalSupport.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<Guid>("Guidemployy")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("GUIDEmployy");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("GuidemployyNavigationEmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<int>("TaskCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Guidemployy");
+                    b.HasIndex("GuidemployyNavigationEmployeeId");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.RequestType", b =>
@@ -294,14 +268,11 @@ namespace TechnicalSupport.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("RequestType1")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("RequestType");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RequestTypeId");
 
-                    b.ToTable("RequestType");
+                    b.ToTable("RequestTypes");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Role", b =>
@@ -319,24 +290,6 @@ namespace TechnicalSupport.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("TechnicalSupport.Models.Sex", b =>
-                {
-                    b.Property<int>("SexId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("SexName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Sex");
-
-                    b.HasKey("SexId");
-
-                    b.ToTable("Sex");
-                });
-
             modelBuilder.Entity("TechnicalSupport.Models.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -351,17 +304,14 @@ namespace TechnicalSupport.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status1")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Status");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DialogId")
                         .IsUnique();
 
-                    b.ToTable("Status");
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.User", b =>
@@ -411,7 +361,7 @@ namespace TechnicalSupport.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WorkTime");
+                    b.ToTable("WorkTimes");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Application", b =>
@@ -422,39 +372,24 @@ namespace TechnicalSupport.Migrations
 
                     b.HasOne("TechnicalSupport.Models.Status", "StatusNavigation")
                         .WithMany("Applications")
-                        .HasForeignKey("Status")
-                        .HasConstraintName("FK_Status")
-                        .IsRequired();
+                        .HasForeignKey("StatusNavigationId");
 
                     b.Navigation("StatusNavigation");
-                });
-
-            modelBuilder.Entity("TechnicalSupport.Models.Client", b =>
-                {
-                    b.HasOne("TechnicalSupport.Models.Sex", "SexNavigation")
-                        .WithMany("Users")
-                        .HasForeignKey("Sex")
-                        .HasConstraintName("FK_UserSex");
-
-                    b.Navigation("SexNavigation");
                 });
 
             modelBuilder.Entity("TechnicalSupport.Models.Detail", b =>
                 {
                     b.HasOne("TechnicalSupport.Models.Chat", "ChatNavigation")
                         .WithMany("Details")
-                        .HasForeignKey("Chat")
-                        .HasConstraintName("FK_DetailsChat");
+                        .HasForeignKey("ChatNavigationChatId");
 
                     b.HasOne("TechnicalSupport.Models.CommunicationType", "CommunicationTypeNavigation")
                         .WithMany("Details")
-                        .HasForeignKey("CommunicationType")
-                        .HasConstraintName("FK_DetailsCommunicationType");
+                        .HasForeignKey("CommunicationTypeNavigationCommunicationTypeId");
 
                     b.HasOne("TechnicalSupport.Models.RequestType", "RequestTypeNavigation")
                         .WithMany("Details")
-                        .HasForeignKey("RequestType")
-                        .HasConstraintName("FK_RequestType");
+                        .HasForeignKey("RequestTypeNavigationRequestTypeId");
 
                     b.Navigation("ChatNavigation");
 
@@ -480,19 +415,9 @@ namespace TechnicalSupport.Migrations
 
             modelBuilder.Entity("TechnicalSupport.Models.Employee", b =>
                 {
-                    b.HasOne("TechnicalSupport.Models.Sex", "SexNavigation")
-                        .WithMany("Employees")
-                        .HasForeignKey("Sex")
-                        .HasConstraintName("FK_EmployeeSex")
-                        .IsRequired();
-
                     b.HasOne("TechnicalSupport.Models.WorkTime", "WorkTimeNavigation")
                         .WithMany("Employees")
-                        .HasForeignKey("WorkTime")
-                        .HasConstraintName("FK_WorkTime")
-                        .IsRequired();
-
-                    b.Navigation("SexNavigation");
+                        .HasForeignKey("WorkTimeNavigationId");
 
                     b.Navigation("WorkTimeNavigation");
                 });
@@ -501,10 +426,7 @@ namespace TechnicalSupport.Migrations
                 {
                     b.HasOne("TechnicalSupport.Models.Employee", "GuidemployyNavigation")
                         .WithMany("Tasks")
-                        .HasForeignKey("Guidemployy")
-                        .HasConstraintName("FK_Task_GUIDEmployy")
-                        .HasPrincipalKey("EmployeeGuid")
-                        .IsRequired();
+                        .HasForeignKey("GuidemployyNavigationEmployeeId");
 
                     b.Navigation("GuidemployyNavigation");
                 });
@@ -558,13 +480,6 @@ namespace TechnicalSupport.Migrations
 
             modelBuilder.Entity("TechnicalSupport.Models.Role", b =>
                 {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("TechnicalSupport.Models.Sex", b =>
-                {
-                    b.Navigation("Employees");
-
                     b.Navigation("Users");
                 });
 
