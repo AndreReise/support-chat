@@ -102,22 +102,19 @@ namespace TechnicalSupport.Services
             {
                 case 1:
                     return await CreateClientClaims(user);
-                    break;
                 case 2:
                     return await CreateEmployeeClaims(user);
-                    break;
                 case 3:
                     return await CreateAdminClaims(user);
                 default:
                     return null;
-                    break;
             }
         }
 
 
         private async Task<List<Claim>> CreateClientClaims(User user)
         {
-            var client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == user.RoleId);
+            var client = await _db.Clients.SingleOrDefaultAsync(x => x.Email == user.Email);
 
             if(client == null)
             {
@@ -136,7 +133,7 @@ namespace TechnicalSupport.Services
         }
         private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == user.RoleId);
+            var employee = await _db.Employees.SingleOrDefaultAsync(x => x.Email == user.Email);
 
             if(employee == null)
             {
