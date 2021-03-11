@@ -19,6 +19,9 @@ using TechnicalSupport.Models;
 using TechnicalSupport.Services;
 using TechnicalSupport.Data;
 using TechnicalSupport.Middleware;
+using Microsoft.Extensions.Logging;
+using System.IO;
+using TechnicalSupport.Utils.Logger;
 
 namespace TechnicalSupport
 {
@@ -127,8 +130,13 @@ namespace TechnicalSupport
 
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILoggerFactory loggerFactory)
         {
+            var logFilePath = Configuration["LoggerSettings:LogFilePath"];
+            var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
+
+            loggerFactory.AddFile(logFilePath, dbConnectionString);
+
 
             //app.UseMiddleware<CultureMiddleware>();
 

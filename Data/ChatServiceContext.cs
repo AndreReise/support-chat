@@ -12,6 +12,7 @@ namespace TechnicalSupport.Data
     {
 
         public virtual DbSet<AdminToken> AdminTokens { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
 
         public ChatServiceContext(DbContextOptions<ChatServiceContext> options) : base(options) {}
 
