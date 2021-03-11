@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace TechnicalSupport.Models.ServiceModels
 {
-    public class Log
+    public class TraceLog
     {
-        public int LogId { get; set; }
+        public int Id { get; set; }
         public DateTime Time { get; set; }
         public string LogMessage { get; set; }
     }
