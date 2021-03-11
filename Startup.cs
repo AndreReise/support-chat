@@ -134,14 +134,12 @@ namespace TechnicalSupport
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILoggerFactory loggerFactory)
         {
+            //Logger setting up
             var logFilePath = Configuration["LoggerSettings:LogFilePath"];
             var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
 
             loggerFactory.AddFile(logFilePath, dbConnectionString);
             var logger = loggerFactory.CreateLogger("Logger");
-
-
-            //app.UseMiddleware<CultureMiddleware>();
 
 
             if (env.IsDevelopment())
@@ -151,7 +149,6 @@ namespace TechnicalSupport
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
