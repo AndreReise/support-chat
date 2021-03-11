@@ -49,7 +49,7 @@ namespace TechnicalSupport.Utils.Logger
                 lock (_lock)
                 {
 
-                    var logMessage = DateTime.UtcNow + formatter(state, exception) + Environment.NewLine;
+                    var logMessage = DateTime.UtcNow + "  " + formatter(state, exception) + Environment.NewLine;
 
                     using var _db = new ChatServiceContext(_DbOptionsBuilder.Options);
 

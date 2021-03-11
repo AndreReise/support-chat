@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,15 @@ namespace TechnicalSupport.Services
         private readonly ChatContext _db;
         private readonly CryptoProvider _cryptoProvider;
         private readonly IHttpContextAccessor _contextAcessor;
+        private readonly ILogger _logger;
 
-        public JoinService(ChatContext db , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
+        public JoinService(ChatContext db , ICryptoProvider cryptoProvider,
+            IHttpContextAccessor contextAccessor , ILogger<JoinService> logger)
         {
             _db = db;
             _cryptoProvider = (CryptoProvider)cryptoProvider;
             _contextAcessor = contextAccessor;
+            _logger = logger;
         }
 
 
@@ -84,11 +88,13 @@ namespace TechnicalSupport.Services
                 await JoinUserAsync(model , nameof(Client));
                 _db.Clients.Add(client);
 
+
                 await _db.SaveChangesAsync();
+                _logger.LogInformation($"Client email {client.Email} has been joined");
 
             }catch(DbUpdateException e)
             {
-
+                _logger.LogError(e.HResult, (Exception)e, e.Message);
             }
             
         }
@@ -126,6 +132,7 @@ namespace TechnicalSupport.Services
 
             }catch(DbUpdateException e)
             {
+                _logger.LogError(e.HResult, (Exception)e, e.Message);
                 return false;
             }
 
@@ -150,7 +157,7 @@ namespace TechnicalSupport.Services
             }
             catch (DbUpdateException e)
             {
-
+                _logger.LogError(e.HResult, (Exception)e, e.Message);
                 return false;
 
             }

@@ -79,7 +79,8 @@ namespace TechnicalSupport
                 new AuthService(
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
-                    options.GetRequiredService<IHttpContextAccessor>()
+                    options.GetRequiredService<IHttpContextAccessor>(),
+                    options.GetRequiredService<ILogger<AuthService>>()
                     )
             );
 
@@ -88,7 +89,8 @@ namespace TechnicalSupport
                 new JoinService(
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
-                    options.GetRequiredService<IHttpContextAccessor>()
+                    options.GetRequiredService<IHttpContextAccessor>(),
+                    options.GetRequiredService<ILogger<JoinService>>()
                     )
             );
 
@@ -136,6 +138,7 @@ namespace TechnicalSupport
             var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
 
             loggerFactory.AddFile(logFilePath, dbConnectionString);
+            var logger = loggerFactory.CreateLogger("Logger");
 
 
             //app.UseMiddleware<CultureMiddleware>();
