@@ -494,3 +494,35 @@ Error Number:4060,State:1,Class:11
 12.03.2021 14:53:07  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
 12.03.2021 15:07:27  User email: admin1@mail.com has been authenticated
 12.03.2021 15:18:25  User email: viktor@gmail.com has been authenticated
+12.03.2021 15:52:08  Application started. Press Ctrl+C to shut down.
+12.03.2021 15:52:09  Hosting environment: Development
+12.03.2021 15:52:09  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 15:52:09  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:52:14  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:52:28  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:52:48  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:52:52  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:52:54  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:53:11  Application started. Press Ctrl+C to shut down.
+12.03.2021 15:53:11  Hosting environment: Development
+12.03.2021 15:53:11  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 15:53:11  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:55:29  Application started. Press Ctrl+C to shut down.
+12.03.2021 15:55:29  Hosting environment: Development
+12.03.2021 15:55:29  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 15:55:30  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:56:08  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:58:34  Application started. Press Ctrl+C to shut down.
+12.03.2021 15:58:34  Hosting environment: Development
+12.03.2021 15:58:34  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 15:58:34  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 15:59:48  Application started. Press Ctrl+C to shut down.
+12.03.2021 15:59:48  Hosting environment: Development
+12.03.2021 15:59:48  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 16:00:26  Application started. Press Ctrl+C to shut down.
+12.03.2021 16:00:26  Hosting environment: Development
+12.03.2021 16:00:26  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 16:02:47  Application started. Press Ctrl+C to shut down.
+12.03.2021 16:02:47  Hosting environment: Development
+12.03.2021 16:02:47  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 16:04:19  User email: admin1@mail.com has been authenticated

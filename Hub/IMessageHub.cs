@@ -9,9 +9,7 @@ namespace TechnicalSupport.Hub
         public interface IMessageHub
         {
             Task Receive(Message message);
-
-        public int GetActiveUsers();
-          
+ 
         }
     
 }
