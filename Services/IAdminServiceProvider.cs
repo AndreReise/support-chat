@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechnicalSupport.Models;
+using TechnicalSupport.Models.ServiceModels;
 using TechnicalSupport.Utils;
 
 namespace TechnicalSupport.Services
@@ -26,5 +27,22 @@ namespace TechnicalSupport.Services
         /// </summary>
         public Task CreateTokensAsync();
 
+        /// <summary>
+        /// Allows to get last error logs
+        /// </summary>
+        /// <returns>List of logs</returns>
+        public List<ErrorLog> GetErrorLogs();
+
+        /// <summary>
+        /// Allows to get last trace logs
+        /// </summary>
+        /// <returns></returns>
+        public List<TraceLog> GetTraceLogs();
+
+        /// <summary>
+        /// Get specified error log
+        /// </summary>
+        /// <param name="id">Log id</param>
+        public Task<ErrorLog> GetErrorLogAsync(int id);
     }
 }

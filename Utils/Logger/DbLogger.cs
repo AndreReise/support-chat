@@ -81,6 +81,7 @@ namespace TechnicalSupport.Utils.Logger
         /// </summary>
         private async void WriteTechnicalLog(string logMessage , Exception e)
         {
+            if (e == null) return;
             using var _db = new ChatServiceContext(_DbOptionsBuilder.Options);
 
             await File.AppendAllTextAsync(_path, logMessage);

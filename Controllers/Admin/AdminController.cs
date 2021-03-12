@@ -157,5 +157,36 @@ namespace TechnicalSupport.Controllers.Admin
 
             return RedirectToAction(nameof(Index));
         }
+
+
+        [HttpGet]
+        public IActionResult Stats()
+        {
+          
+            return View("Views/Admin/Stats/Stats.cshtml");
+        }
+
+        [HttpGet]
+        public IActionResult ErrorLogs()
+        {
+            ViewBag.ErrorLogs = _adminService.GetErrorLogs();
+
+            return View("Views/Admin/Stats/ErrorLogs.cshtml");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetErrorLog(int id)
+        {
+            ViewBag.Log = await _adminService.GetErrorLogAsync(id);
+            return View("Views/Admin/Stats/LogInfo.cshtml");
+        }
+
+        [HttpGet]
+        public IActionResult TraceLogs()
+        {
+            ViewBag.TraceLogs = _adminService.GetTraceLogs();
+
+            return View("Views/Admin/Stats/TraceLogs.cshtml");
+        }
     }
 }

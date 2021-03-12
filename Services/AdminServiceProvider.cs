@@ -14,6 +14,8 @@ namespace TechnicalSupport.Services
     public class AdminServiceProvider : IAdminServiceProvider 
     {
         private const int NTOKENS = 10;
+        private const int TRACE_COUNT = 1000;
+        private const int ERROR_COUNT = 100;
 
         private readonly ChatContext _db;
         private readonly ChatServiceContext _serviceDb;
@@ -255,6 +257,34 @@ namespace TechnicalSupport.Services
 
                 }
             }
+        }
+
+        public List<ErrorLog> GetErrorLogs()
+        {
+            return _serviceDb.TechnicalLogs
+                .OrderBy(x => x.Time)
+                .AsEnumerable()
+                .TakeLast(ERROR_COUNT).ToList();
+        }
+
+
+
+        public List<TraceLog> GetTraceLogs()
+        {
+            return _serviceDb.TraceLogs
+                .OrderBy(x => x.Id)
+                .AsEnumerable()
+                .TakeLast(TRACE_COUNT).ToList();
+        }
+
+        public Task<ErrorLog> GetErrorLogAsync(int id)
+        {
+            return Task.Run(() => GetErrorLog(id));
+        }
+
+        private async Task<ErrorLog> GetErrorLog(int id)
+        {
+            return await _serviceDb.TechnicalLogs.SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }
