@@ -7,15 +7,15 @@ using TechnicalSupport.Models;
 
 namespace TechnicalSupport.AutoChat
 {
-    public class DialogEmployee : AutoDialog
+    public class DialogEmployee 
     {
         private ChatContext _context;
-        public DialogEmployee(ChatContext context) :base(context)
+        public DialogEmployee(ChatContext context)
         {
            _context = context;
 
         }
-        public Message EmployeeMethod (Message mes)
+        public Message DialogEmployeeMain(Message mes, ref Dictionary<Guid, int> clientState)
         {
             var emp = _context.Employees.Where(w => w.StatusOnline == true).FirstOrDefault();
 
