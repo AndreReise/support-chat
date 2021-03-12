@@ -6,9 +6,6 @@ function UserButtonInterracts(elem) {
     //console.dir(elem);
     //либо тут  добавлять
     hubConnection.invoke("Send", { "Text": this.innerHTML, "Name": userName, "SenderType": "in" });
-
-      //SwapChatPanel();
-      //$(".chat-button-row").empty();
 }
 
 // отправка сообщения от простого пользователя
@@ -18,6 +15,7 @@ document.getElementById("chat-submit").addEventListener("click", function (e) {
     mes.name = message.name;
     mes.text = text;
     hubConnection.invoke("Send", mes);
+    document.getElementById("chat-input").value = "";
 });
 
 
@@ -62,7 +60,6 @@ function ModalSetDefault(){
     userName = $("#modal-name").val();
     document.getElementById("header").innerHTML = "<h3>Welcome " + userName + "</h3>";
     message.name = userName;
-    //console.dir($("#modal-name"));
     $("#modal-name").val(userName);
         ToggleChat();
 }
@@ -76,7 +73,6 @@ function ToggleChat(){
 function CloseChat() {
     $("#Modal").toggle();
     $('.reason-buttons').find('[data-reason="' + user.Reasone + '"]')[0].focus(); //.addClass('active')
-    //console.dir(sf);
 }
 
 function RegisterModal() {
@@ -111,15 +107,6 @@ function RegisterInput() {
         if (msg.trim() == '') {
             return false;
         }
-        addMessage(msg, 'first','username','sometimes');
-
-       // SwapChatPanel();
-      //  AddBtn("asdasd");
-      //  AddBtn("back to chat", "btn-success");
-
-        //setTimeout(function () {
-        //    addMessage(msg, 'second', 'connectedSpecName','tooLate');
-        //}, 1000);
 
     });
     $("#chat-input").keyup("keyup", function (event) {
@@ -132,27 +119,6 @@ function RegisterInput() {
         }
     });
 
-}
-
-function addMessage(msg, type, name, time) {
-    var str = "";
-    str += "<div  class=\"chat " + type + "\">";
-    if (type === "first") {
-        str += "              <i class=\"fas fa-users\"><\/i>";
-    }
-    else {
-        str += "            <img src=\"https://www.w3schools.com/howto/img_avatar.png\" alt=\"Avatar\" class=\"right\">";
-    }
-    str += "              <span class=\"name\">" + name + "<\/span>";
-    str += "              <p class=\"chat\">" + msg + "<\/p>";
-    str += "              <span class=\"time time-right\">" + time + "<\/span>";
-    str += "          <\/div>";
-
-    $(".chat-messages").append(str);
-    if (type == 'first') {
-        $("#chat-input").val('');
-    }
-    $(".chat-messages").stop().animate({ scrollTop: $(".chat-messages")[0].scrollHeight }, 1000);
 }
 
 function SwapChatPanel() {
@@ -168,22 +134,8 @@ function SetReasone(elem) {
 
 }
 
-function AddBtn(btnText, btnClass = "btn-primary",btnRow =0) {
-var button = document.createElement("button");
-    button.innerHTML = btnText;
-    button.classList.add("btn-interract");
-    button.classList.add("btn");
-    button.classList.add(btnClass);
-    // Добавлять  другую  стату через параметры или дата аттр или как либо иначе
-    var body = document.getElementsByClassName("chat-button-row")[btnRow];
-    //console.dir(body);
-    body.appendChild(button);
-    button.onclick =UserButtonInterract;
-}
-
 function UserButtonInterract(elem) {
     //console.dir(elem);
-    //либо тут  добавлять
     SwapChatPanel();
     $(".chat-button-row").empty();
 }

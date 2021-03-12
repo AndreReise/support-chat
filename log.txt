@@ -481,3 +481,26 @@ Error Number:4060,State:1,Class:11
 12.03.2021 8:25:29  Application started. Press Ctrl+C to shut down.
 12.03.2021 8:25:30  Hosting environment: Development
 12.03.2021 8:25:30  Content root path: C:\Games\PROJ
+12.03.2021 8:42:55  Application started. Press Ctrl+C to shut down.
+12.03.2021 8:42:55  Hosting environment: Development
+12.03.2021 8:42:55  Content root path: C:\Games\PROJ
+12.03.2021 8:45:59  Application started. Press Ctrl+C to shut down.
+12.03.2021 8:45:59  Hosting environment: Development
+12.03.2021 8:47:12  Application started. Press Ctrl+C to shut down.
+12.03.2021 8:47:13  Hosting environment: Development
+12.03.2021 8:47:13  Content root path: C:\Games\PROJ
+12.03.2021 8:51:00  Client email bot@mail.com has been joined
+12.03.2021 8:52:51  User email: admin1@mail.com has been authenticated
+12.03.2021 10:34:49  Application started. Press Ctrl+C to shut down.
+12.03.2021 10:34:49  Hosting environment: Development
+12.03.2021 10:34:49  Content root path: C:\Games\PROJ
+12.03.2021 10:34:49  An exception occurred while iterating over the results of a query for context type 'TechnicalSupport.Data.ChatContext'.
+System.InvalidOperationException: A second operation was started on this context before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
+   at Microsoft.EntityFrameworkCore.Internal.ConcurrencyDetector.EnterCriticalSection()
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+12.03.2021 10:34:49  Error when dispatching 'OnConnectedAsync' on hub.
+12.03.2021 10:34:58  An exception occurred while iterating over the results of a query for context type 'TechnicalSupport.Data.ChatContext'.
+System.InvalidOperationException: A second operation was started on this context before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
+   at Microsoft.EntityFrameworkCore.Internal.ConcurrencyDetector.EnterCriticalSection()
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+12.03.2021 10:34:58  Error when dispatching 'OnConnectedAsync' on hub.
