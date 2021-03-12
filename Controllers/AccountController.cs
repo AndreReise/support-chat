@@ -87,11 +87,7 @@ namespace TechnicalSupport.Controllers
             }
             else
             {
-                return RedirectToRoute(new
-                {
-                    controller = lResult.RoleName,
-                    action = "Index"
-                }); 
+                return RedirectToAction(nameof(Index), "Account");
 
             }
             

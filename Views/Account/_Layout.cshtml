@@ -27,13 +27,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">My Account</a>
                         </li>
-                    @if (User.IsInRole("EMPLOYEE"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Employee">Employee Page</a>
-                        </li>
-                    }
-                        </li>
+                        @if(User.IsInRole("ADMIN"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin Page</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("EMPLOYEE"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Employee">Employee Page</a>
+                            </li>
+                        }
                         @if (Context.User.Identity.IsAuthenticated)
                         {
                             <li>
