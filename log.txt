@@ -481,3 +481,16 @@ Error Number:4060,State:1,Class:11
 12.03.2021 8:25:29  Application started. Press Ctrl+C to shut down.
 12.03.2021 8:25:30  Hosting environment: Development
 12.03.2021 8:25:30  Content root path: C:\Games\PROJ
+12.03.2021 14:42:10  Application started. Press Ctrl+C to shut down.
+12.03.2021 14:42:10  Hosting environment: Development
+12.03.2021 14:42:11  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 14:42:26  User email: admins@mail.com has been authenticated
+12.03.2021 14:43:12  User email: admin1@mail.com has been authenticated
+12.03.2021 14:45:56  Application started. Press Ctrl+C to shut down.
+12.03.2021 14:45:57  Hosting environment: Development
+12.03.2021 14:45:57  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 14:53:07  Application started. Press Ctrl+C to shut down.
+12.03.2021 14:53:07  Hosting environment: Development
+12.03.2021 14:53:07  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 15:07:27  User email: admin1@mail.com has been authenticated
+12.03.2021 15:18:25  User email: viktor@gmail.com has been authenticated
