@@ -89,7 +89,7 @@ namespace TechnicalSupport.Services
 
 
                 await _db.SaveChangesAsync();
-                _logger.LogInformation($"Client email {client.Email} has been joined");
+                _logger.LogInformation($"Client email {client.User.Email} has been joined");
 
             }catch(DbUpdateException e)
             {

@@ -1,0 +1,13 @@
+12.03.2021 02:05:07  Application started. Press Ctrl+C to shut down.
+12.03.2021 02:05:07  Hosting environment: Development
+12.03.2021 02:05:07  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 02:05:47  Application started. Press Ctrl+C to shut down.
+12.03.2021 02:05:48  Hosting environment: Development
+12.03.2021 02:05:48  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 02:08:36  Application started. Press Ctrl+C to shut down.
+12.03.2021 02:08:36  Hosting environment: Development
+12.03.2021 02:08:36  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 02:11:46  Application started. Press Ctrl+C to shut down.
+12.03.2021 02:11:46  Hosting environment: Development
+12.03.2021 02:11:47  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
+12.03.2021 2:12:55  User email: admin1@mail.com has been authenticated
