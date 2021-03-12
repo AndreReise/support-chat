@@ -286,5 +286,15 @@ namespace TechnicalSupport.Services
         {
             return await _serviceDb.TechnicalLogs.SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        public Task<int> GetActiveOperatorsAsync()
+        {
+            return Task.Run(() => GetActiveOperators());
+        }
+
+        private async Task<int> GetActiveOperators()
+        {
+            return await _db.Employees.Where(x => x.StatusOnline == true).CountAsync();
+        }
     }
 }
