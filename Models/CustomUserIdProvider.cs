@@ -18,63 +18,26 @@ namespace TechnicalSupport.Models
 
     public class CustomUserIdProvider : IUserIdProvider
     {
-        private readonly ChatContext _chatContext;
-
-        Dictionary<string, Employee> EmploDictionar;
-        Dictionary<string, Client> UserDictionar;
+        private  ChatContext _chatContext;
+        private  Dictionary<string, User> usersDictionar;
 
         public CustomUserIdProvider (ChatContext db)
-        {
-            
+        {     
             _chatContext = db;
-
-
-            var employees = _chatContext.Employees.Where(x => x.Email != null).Select(x => x).ToList();
-            if (employees != null)
-                EmploDictionar = employees.ToDictionary(s => s.FirstName+s.LastName);
-
-          //  var clients = _chatContext.Clients.Where(x => x.Email != null);
-         //   if (clients != null)
-          //      UserDictionar = clients.ToDictionary(s => s.FirstName + s.LastName);
-
-
+            usersDictionar = _chatContext?.Users?.Where(s=>s.FirstName != null).ToDictionary(s => s.FirstName+s.LastName);
         }
+
 
         public virtual string GetUserId(HubConnectionContext connection)
         {
-            Guid id = default(Guid);
 
-            if (connection.User?.Identity.Name != null)
+            if (connection.User?.Identity.Name != null && usersDictionar.ContainsKey(connection.User.Identity.Name))
             {
-
-
-               if ( EmploDictionar.ContainsKey(connection.User.Identity.Name))
-                { 
-               id = EmploDictionar[connection.User.Identity.Name].EmployeeGuid;
-                
-                }
-
-              
-
-              //  if (UserDictionar.ContainsKey(connection.User.Identity.Name))
-             //   {
-             //     id = UserDictionar[connection.User.Identity.Name].ClientGuid;
-             //   }
-
-                id = id != null ? id : Guid.NewGuid();
-
-                return id.ToString();
-
+                return usersDictionar[connection.User.Identity.Name].UserId.ToString();  
             }
-
-
             else return Guid.NewGuid().ToString();
-            // или так
-            //return connection.User?.FindFirst(ClaimTypes.Name)?.Value;
+          
         }
-
-
-
 
     }
 }

@@ -8,12 +8,12 @@ namespace TechnicalSupport.Models
     public class Dialog
     {
         public Guid DialogId { get; set; }
-        public Guid UserId { get; set; }
-        public Guid EmployeeId { get; set; }
         //
-        public User User { get; set; }
+        public Guid ClientUserUserId { get; set; }
+        public Client Client { get; set; }
+        public Guid EmployeeUserUserId { get; set; }
         public Employee Employee { get; set; }
-        public Status Status { get; set; }
+
        
     }
 }

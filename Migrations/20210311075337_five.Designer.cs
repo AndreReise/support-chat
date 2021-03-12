@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechnicalSupport.Data;
 
 namespace TechnicalSupport.Migrations
 {
     [DbContext(typeof(ChatContext))]
-    partial class ChatContextModelSnapshot : ModelSnapshot
+    [Migration("20210311075337_five")]
+    partial class five
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,12 +142,6 @@ namespace TechnicalSupport.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("LocalHash")

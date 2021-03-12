@@ -51,27 +51,9 @@
 </div>
 
 <div class="chat-messages" id="chat-messages">
-    <div class="chat first">
-        <i class="fas fa-users"></i>
-        <span class="name">Name</span>
-        <p class="chat">Sweet! So, what do you wannweet! So, what do you wannweet! So, what do you wannweet! So, what do you wanna do </p>
-        <span class="time">11:02</span>
-    </div>
 
-    <div class="chat second">
-        <img src="~/Icons/Footer/telegram.png" alt="Avatar" class="right">
-        <span class="name">Name2</span>
-        <p class="chat">Nah, I dunnoweet! So, coding perhaps?</p>
-        <span class="time">11:05</span>
-    </div>
 
-    <div class="chat first">
-        <i class="fas fa-users"></i>
-        <span class="name">Name</span>
-        <p class="chat">Sweet! So, what do you wt! So, what do you wanna do </p>
-        <span class="time">11:02</span>
-    </div>
-
+  
 </div>
 
 
@@ -104,9 +86,12 @@
 
     let userName = "UserDefault";
 
+    let message = { name: userName }; 
+
     // получение сообщения от сервера
     hubConnection.on("Receive", function (mes) {
 
+        message.dialogid = mes.dialogid;
 
         let servmessage = document.createElement("div");
 
@@ -124,7 +109,7 @@
 
 
      
-        servmessage.appendChild(document.createTextNode('Name:' + mes.dialogId));
+        servmessage.appendChild(document.createTextNode('Name:' + mes.name));
         // создает элемент <p> для сообщения пользователя
         let elem = document.createElement("p");
 
@@ -165,29 +150,10 @@
 
         var firstElem = document.getElementById("chat-messages").firstChild;
         document.getElementById("chat-messages").insertBefore(servmessage, firstElem);
+       
 
     });
   
-
-    hubConnection.onreconnecting((error) => {
-        const status = `Connection lost due to error "${error}". Reconnecting.`;
-        document.getElementById("messageInput").disabled = true;
-        document.getElementById("sendButton").disabled = true;
-        document.getElementById("connectionStatus").innerText = status;
-    });
-
-    hubConnection.onreconnected((connectionId) => {
-        const status = `Connection reestablished. Connected.`;
-        document.getElementById("messageInput").disabled = false;
-        document.getElementById("sendButton").disabled = false;
-        document.getElementById("connectionStatus").innerText = status;
-    });
-
-    hubConnection.onclose((error) => {
-        hubConnection.start();
-        console.error(`Something went wrong: ${error}`);
-    });
-
 
 
     function UserButtonInterracts(elem) {
@@ -203,8 +169,8 @@
     document.getElementById("loginBtn").addEventListener("click", function (e) {
         userName = document.getElementById("userName").value;
         document.getElementById("header").innerHTML = "<h3>Welcome " + userName + "</h3>";
-
-        hubConnection.invoke("SendTechnical", { "Name": userName });
+        message.name = userName;
+     
 
 
     });
@@ -214,7 +180,10 @@
 
     document.getElementById("chat-submit").addEventListener("click", function (e) {
         let text = document.getElementById("chat-input").value;
-        hubConnection.invoke("Send", { "Text": text, "Name": userName, "SenderType": "in" });
+        let mes = {};
+        mes.name = message.name;
+        mes.text = text;
+        hubConnection.invoke("Send", mes);
     });
 
 

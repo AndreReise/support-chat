@@ -1,39 +1,34 @@
-﻿@model TechnicalSupport.Models.Client
+﻿@model TechnicalSupport.Models.User
 
 <h1>Edit</h1>
 
-<h4>Client @ViewBag.Client.FirstName</h4>
+<h4>Client @ViewBag.User.FirstName</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ChangeClient">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ClientId" value="@ViewBag.Client.ClientId"/>
+            <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId"/>
 
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" value="@ViewBag.Client.FirstName" class="form-control" />
+                <input asp-for="FirstName" value="@ViewBag.User.FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" value="@ViewBag.Client.LastName" class="form-control" />
+                <input asp-for="LastName" value="@ViewBag.User.LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" value="@ViewBag.Client.Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" value="@ViewBag.Client.Phone" class="form-control" />
+                <input asp-for="Phone" value="@ViewBag.User.Phone" class="form-control" />
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" value="@ViewBag.Client.Email" class="form-control" />
+                <input asp-for="Email" value="@ViewBag.User.Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">

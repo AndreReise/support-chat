@@ -70,7 +70,7 @@ namespace TechnicalSupport
 
 
             mes.TextTupe = "text";
-
+            mes.Name = "Bot";
 
             if (!clientState.ContainsKey(mes.DialogId))
             {
@@ -891,12 +891,12 @@ namespace TechnicalSupport
         
         public Message DialogEmployee(Message mes)
         {
-           User emp = _context.Users.Where(w=>w.Role.Name == "EMPLOYEE").FirstOrDefault();
-
+           var emp = _context.Employees.Where(w=>w.StatusOnline == true).FirstOrDefault();
+          
             if(emp !=null)
             {
                Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
-                thisDialog.EmployeeId = emp.UserGuid;
+                thisDialog.EmployeeUserUserId = emp.UserUserId;
                 _context.SaveChanges();
                 mes.Text = $"Перемикаю на оператора";
             }

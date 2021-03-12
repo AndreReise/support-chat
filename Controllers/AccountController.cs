@@ -13,7 +13,7 @@ using TechnicalSupport.Utils;
 namespace TechnicalSupport.Controllers
 {
 
-    [AllowAnonymous]
+ 
     public class AccountController : Controller
     {
         private readonly ChatContext _db;
@@ -103,6 +103,12 @@ namespace TechnicalSupport.Controllers
             await _authService.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public IActionResult Employee()
+        {
+            return View();
         }
     }
 }

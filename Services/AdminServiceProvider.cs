@@ -33,24 +33,22 @@ namespace TechnicalSupport.Services
         }
 
 
-        public Task<bool> ChangeClientAsync(Client _client)
+        public Task<bool> ChangeClientAsync(User _client)
         {
 
             return Task.Run(() => ChangeClient(_client));
         }
 
 
-        private async Task<bool> ChangeClient(Client _client)
+        private async Task<bool> ChangeClient(User _client)
         {
 
-            var client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == _client.ClientId);
+            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.UserId);
 
             if (client == null) return false;
 
             client.Email = _client.Email;
             client.Phone = _client.Phone;
-            client.FirstName = _client.FirstName;
-            client.LastName = _client.LastName;
 
             try
             {
@@ -84,14 +82,9 @@ namespace TechnicalSupport.Services
             {
                 await ChangeUser(_employee);
 
-
-                employee.FirstName = _employee.FirstName;
-                employee.LastName = _employee.LastName;
-
-                employee.Phone = _employee.Phone;
-                employee.Email = _employee.Email;
-
+         
                 employee.Age = _employee.Age;
+
 
                 await _db.SaveChangesAsync();
 
@@ -108,9 +101,9 @@ namespace TechnicalSupport.Services
         }
 
 
-        private async Task<bool> ChangeUser(Client _client)
+        private async Task<bool> ChangeUser(User _client)
         {
-            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.ClientId);
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.UserId);
 
             if (user == null) return false;
 
@@ -132,15 +125,14 @@ namespace TechnicalSupport.Services
 
         private async Task<bool> ChangeUser(Employee _employee)
         {
-            var user  = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _employee.EmployeeId);
+            var user  = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _employee.UserUserId);
 
             if (user == null) return false;
 
             try
             {
 
-                user.Email = _employee.Email;
-                user.Phone = _employee.Phone;
+              
 
                 await _db.SaveChangesAsync();
                 return true;
@@ -179,7 +171,7 @@ namespace TechnicalSupport.Services
         {
 
             //Filter unverified employees
-            var employees = _db.Employees.Where(x => x.Email != null && x.Phone != null);
+            var employees = _db.Employees.Where(x => x.Age != null);
 
             return await employees.ToListAsync();
 
@@ -194,7 +186,7 @@ namespace TechnicalSupport.Services
         private async Task<List<Client>> GetClientList()
         {
 
-            var clients = _db.Clients.Where(x => x.Email != null || x.Phone != null);
+            var clients = _db.Clients.Where(x => x.Age != null);
 
             return await clients.ToListAsync();
 

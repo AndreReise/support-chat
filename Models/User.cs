@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace TechnicalSupport.Models
 {
     public class User
-    {
-        public int UserId { get; set; }
-        public Guid UserGuid { get; set; }
+    { 
+        public Guid UserId { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         public int? RoleId { get; set; }
         public Role Role { get; set; }

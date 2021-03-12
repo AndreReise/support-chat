@@ -9,8 +9,8 @@
     @foreach (Employee employee in ViewBag.Employees)
     {
         <tr>
-            <th>@employee.FirstName</th>
-            <th>@employee.LastName </th>
+            <th>@employee.Age</th>
+            
             <th><a asp-action="ChangeEmployee" asp-controller="Admin" asp-route-id="@employee.EmployeeId">Change</a></th>
         </tr>
     }

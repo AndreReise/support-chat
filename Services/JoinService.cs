@@ -57,8 +57,12 @@ namespace TechnicalSupport.Services
                 Phone = model.Phone,
                 LocalHash = localHash,
                 PasswordHash = passwordHash,
-                Role = _db.Roles.First(x => x.Name == type.ToUpper())
+                LastName = model.LastName,
+                FirstName = model.FirstName,
+                RoleId = 1
             };
+
+           var tt = user;
 
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
@@ -70,12 +74,7 @@ namespace TechnicalSupport.Services
 
             Client client = new Client
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
                 Age = model.Age,
-                Phone = model.Phone,
-                Email = model.Email,
-                //Sex = _db.Sexes.First(x => x.SexName == model.SexName) //NEED SEX TABLE CHANGES 
                 UserIp = _contextAcessor.HttpContext.Connection.RemoteIpAddress.ToString()
             };
 
@@ -107,11 +106,8 @@ namespace TechnicalSupport.Services
 
             Employee employee = new Employee
             {
-                EmployeeGuid = Guid.NewGuid(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Phone = model.Phone,
-                Email = model.Email
+
+                Age = model.Age, 
             };
 
             try

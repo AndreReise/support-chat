@@ -54,16 +54,16 @@ namespace TechnicalSupport.Controllers.Admin
 
 
         [HttpGet]
-        public async Task<IActionResult> ChangeClient(int id)
+        public async Task<IActionResult> ChangeClient(Guid id)
         {
-            ViewBag.Client = await _db.Clients.SingleOrDefaultAsync(x => x.ClientId == id);
+            ViewBag.User = await _db.Users.SingleOrDefaultAsync(x => x.UserId == id);
 
             return View("Views/Admin/Clients/ChangeClient.cshtml");
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ChangeClient(Client client)
+        public async Task<IActionResult> ChangeClient(User client)
         {
             if (ModelState.IsValid)
             {

@@ -22,7 +22,7 @@ namespace TechnicalSupport.Controllers.EF
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var gL_SupportContext = _context.Employees.Include(e => e.WorkTimeNavigation);
+            var gL_SupportContext = _context.Employees.Include(e => e.WorkTime);
             return View(await gL_SupportContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace TechnicalSupport.Controllers.EF
             }
 
             var employee = await _context.Employees
-                .Include(e => e.WorkTimeNavigation)
+                .Include(e => e.WorkTime)
                 .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)
             {
@@ -132,7 +132,7 @@ namespace TechnicalSupport.Controllers.EF
             }
 
             var employee = await _context.Employees
-                .Include(e => e.WorkTimeNavigation)
+                .Include(e => e.WorkTime)
                 .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)
             {

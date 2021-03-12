@@ -7,8 +7,7 @@
     @foreach (Client client in ViewBag.Clients)
     {
         <tr>
-            <th>@client.FirstName</th>
-            <th>@client.LastName </th>
+            <th>@client.Age</th>
             <th><a asp-action="ChangeClient" asp-controller="Admin" asp-route-id="@client.ClientId">Change</a></th>
         </tr>
     }
