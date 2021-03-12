@@ -64,7 +64,6 @@ namespace TechnicalSupport.Services
                 PasswordHash = passwordHash,
                 LastName = model.LastName,
                 FirstName = model.FirstName,
-                RoleId = 1,
                 Role = _db.Roles.FirstOrDefault(x => x.Name == type.ToUpper())
             };
 
