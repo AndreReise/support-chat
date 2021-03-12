@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TechnicalSupport.AutoChat;
 using TechnicalSupport.Data;
 using TechnicalSupport.Models;
 
@@ -10,14 +12,14 @@ namespace TechnicalSupport
 {
     public class AutoDialog
     {
-
-
         delegate Message DialogMetod (Message mes);
-        private Dictionary<Guid, int> clientState;
+
+        protected Dictionary<Guid, int> clientState;
         private Dictionary<Guid, int> dialogBookingState;
         private Dictionary<Guid, int> dialogNewBookingState;
         private Dictionary<Guid, int> dialogEditBookingState;
         private Dictionary<Guid, int> dialogRegState;
+
         Dictionary<Guid, Dictionary<string, string>> UserDataDictionary;
         private ChatContext _context;
 
@@ -35,30 +37,44 @@ namespace TechnicalSupport
         string DefaultTextMessage;
 
 
-        string[] textArrDialogRegister = { "Для регістрації введіть номер бронювання", " Оберіть номер місця в діапазоні 0-44", "Ви зареестровані!" };
-       
+        string[] textArrDialogRegister;
+        string[][] tableflight;
+        string[] textArrDialogEditBooking;
+
         public AutoDialog(ChatContext context)
         {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("dialogsettings.json");
+            IConfigurationRoot config = builder.Build();
+           
+            textArrDialogRegister = config.GetSection("textArrDialogRegister").Get<string[]>();
+            tableflight = config.GetSection("tableflight").Get<string[][]>();
+            textArrDialogEditBooking = config.GetSection("textArrDialogEditBooking").Get<string[]>();
+
             _context = context;
+
             clientState = new Dictionary<Guid, int>();
             dialogBookingState = new Dictionary<Guid, int>();
             dialogNewBookingState = new Dictionary<Guid, int>();
             dialogEditBookingState = new Dictionary<Guid, int>();
             dialogRegState = new Dictionary<Guid, int>();
+
             UserDataDictionary = new Dictionary<Guid, Dictionary<string, string>>();
+
             DialogName = new Dictionary<Dialogs, string>() {
                 { Dialogs.Booking, "Бронювання квитків" },
                 { Dialogs.Register, "Онлайн реєстрація" },
                 { Dialogs.Employee, "Звязатися з оператором" }
             };
 
+          
+
             DialogMetodDict = new Dictionary<Dialogs, DialogMetod>() {
                 {Dialogs.Booking,  DialogBookingMain},
                 {Dialogs.Register,  DialogRegister},
-                {Dialogs.Employee,  DialogEmployee},
+                {Dialogs.Employee,  EmployeeMethod},
 
             };
-
 
             DefaultTextMessage = ButtonToJson(5, "Оберіть сервіс:", DialogName.Values.ToArray());
 
@@ -206,33 +222,6 @@ namespace TechnicalSupport
 
             string textBookingConfirm = ButtonToJson(2, $"Підтвердіть бронювання за маршрутом  {flight}", new string[2] { "Yes", "No" });
             
-
-            string[][] tableflight = { new string[] {"Київ",    "Львів",    "8.03.21",  "10:30"},
-                                       new string[] {"Київ",    "Львів",    "9.03.21",  "14:30"},
-                                       new string[] {"Київ",    "Одеса",    "9.03.21",  "12:10"},
-                                       new string[] {"Київ",    "Одеса",    "10.03.21",  "16:10"},
-                                       new string[] {"Київ",    "Харків",   "10.03.21", "15:30"},
-                                       new string[] {"Київ",    "Харків",   "11.03.21", "18:30"},
-                                       new string[] {"Харків",  "Київ",     "11.03.21",  "9:00"},
-                                       new string[] {"Харків",  "Київ",     "13.03.21",  "5:00"},
-                                       new string[] {"Харків",  "Львів",    "12.03.21", "11:30"},
-                                       new string[] {"Харків",  "Львів",    "13.03.21", "14:30"},
-                                       new string[] {"Харків",  "Одеса",    "13.03.21", "19:15"},
-                                       new string[] {"Харків",  "Одеса",    "15.03.21", "15:15"},
-                                       new string[] {"Львів",   "Київ",     "14.03.21", "20:25"},
-                                       new string[] {"Львів",   "Київ",     "17.03.21", "21:25"},
-                                       new string[] {"Львів",   "Харків",   "15.03.21", "10:35"},
-                                       new string[] {"Львів",   "Харків",   "18.03.21", "12:35"},
-                                       new string[] {"Львів",   "Одеса",    "16.03.21", "14:40"},
-                                       new string[] {"Львів",   "Одеса",    "19.03.21", "13:40"},
-                                       new string[] {"Одеса",   "Київ",     "17.03.21",  "8:30"},
-                                       new string[] {"Одеса",   "Київ",     "19.03.21",  "9:30"},
-                                       new string[] {"Одеса",   "Харків",   "18.03.21", "11:00"},
-                                       new string[] {"Одеса",   "Харків",   "28.03.21", "12:00"},
-                                       new string[] {"Одеса",   "Львів",    "19.03.21", "17:50"},
-                                       new string[] {"Одеса",   "Львів",    "25.03.21", "12:55"}
-                                    };
-
             string[] textArrDialogNewBooking = { ButtoBookingOne, ButtoBookingTwo, "Оберіть рейс", textnumberseat, textBookingConfirm, "" };
 
 
@@ -548,9 +537,6 @@ namespace TechnicalSupport
 
         public Message DialogBookingEdit (Message mes)
         {
-
-            string[] textArrDialogEditBooking = { "Введіть номер бронювання:", "", "Введіть номер бажаного місця: ", "Місце змінено!" };
-
 
             if (dialogEditBookingState.ContainsKey(mes.DialogId))
             {
@@ -887,18 +873,18 @@ namespace TechnicalSupport
             }
 
 
-        }     
-        
-        public Message DialogEmployee(Message mes)
+        }
+
+        public Message EmployeeMethod(Message mes)
         {
-           var emp = _context.Employees.Where(w=>w.StatusOnline == true).FirstOrDefault();
-          
-            if(emp !=null)
+            var emp = _context.Employees.Where(w => w.StatusOnline == true).FirstOrDefault();
+
+            if (emp != null)
             {
-               Dialog thisDialog =  _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
+                Dialog thisDialog = _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
                 thisDialog.EmployeeUserUserId = emp.UserUserId;
                 _context.SaveChanges();
-                mes.Text = $"Перемикаю на оператора";
+                mes.Text = $"Перемикаю на оператора {emp.User.FirstName}";
             }
             else
             {
@@ -906,9 +892,8 @@ namespace TechnicalSupport
                 clientState[mes.DialogId] = 0;
 
             }
-        return mes;
+            return mes;
         }
-
         public string ButtonToJson (int i, string text, string [] buttontext = null)
         {
             var buttons = new

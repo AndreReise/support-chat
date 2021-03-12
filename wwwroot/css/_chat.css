@@ -3,7 +3,6 @@
     display: none;
     overflow-y: auto;
     max-width: 50%;
-    min-width: 30%;
     max-height: 85%;
     height: 80%;
     border: 1px solid #fff;
@@ -102,9 +101,7 @@ span.closeChat:hover, span.closeChat:focus, span.minimizeChat:hover, span.minimi
 
 .chat-messages{
     padding-bottom:3rem;
-    min-height: 2000px;
 }
-
 
 .chat.header {
     background: #ffe93e;
@@ -422,24 +419,3 @@ label span.req, span.req {
 
 /*--------------------------------------------------------------------------------
    close connection modal  */
-
-
-.enterName, .enterEmail{
-    cursor:pointer;
-}
-
-    .enterName:hover, .enterEmail:hover {
-        animation: profile_icons 1.5s infinite;
-    }
-
-@keyframes profile_icons {
-    0% {
-    }
-
-    50% {
-        color: #59ffe0;
-    }
-
-    0% {
-    }
-}

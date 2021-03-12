@@ -1,25 +1,7 @@
-﻿"use strict";
+﻿
+"use strict";
 window.onload = Init();
 var user = new User(2);
-
-function UserButtonInterracts(elem) {
-    //console.dir(elem);
-    //либо тут  добавлять
-    hubConnection.invoke("Send", { "Text": this.innerHTML, "Name": userName, "SenderType": "in" });
-
-      //SwapChatPanel();
-      //$(".chat-button-row").empty();
-}
-
-// отправка сообщения от простого пользователя
-document.getElementById("chat-submit").addEventListener("click", function (e) {
-    let text = document.getElementById("chat-input").value;
-    let mes = {};
-    mes.name = message.name;
-    mes.text = text;
-    hubConnection.invoke("Send", mes);
-});
-
 
 function Init() {
     $(".minimizeChat").click(ToggleChat);
@@ -30,41 +12,6 @@ function Init() {
 
     RegisterModal();
     RegisterInput();
-
-    // установка имени пользователя
-    document.getElementById("loginBtn").addEventListener("click", function (e) {
-        var width = $("#user-chat-container").width();
-        userName = document.getElementById("userName").value;
-        document.getElementById("header").innerHTML = "<h3>Welcome " + userName + "</h3>";
-        message.name = userName;
-        $("#userNameBlock").hide();
-        $("#user-chat-container").width = width;
-    });
-    $(".enterName").click({ msg: "Profile" },UserProfileData);
-    $(".enterEmail").click({ msg: "Profile" },UserProfileData);
-
-}
-
-function UserProfileData(e) {
-    if (e.data.msg ==="Profile") {
-        $("#modal-name").val(userName);
-        $(".modal-body").children()[0].style.display = "none";
-        $(".modal-header").children()[0].innerHTML = e.data.msg;
-        $("#modalNo").hide();
-    }
-    $("#Modal").show();
-}
-
-function ModalSetDefault(){
-    $(".modal-body").children()[0].style.display = "block";
-    $(".modal-header").children()[0].innerHTML = "Do you want to complete this dialog ?";
-    $("#modalNo").show();
-    userName = $("#modal-name").val();
-    document.getElementById("header").innerHTML = "<h3>Welcome " + userName + "</h3>";
-    message.name = userName;
-    //console.dir($("#modal-name"));
-    $("#modal-name").val(userName);
-        ToggleChat();
 }
 
 
@@ -87,7 +34,6 @@ function RegisterModal() {
     btn.addEventListener("click", function () {
         $("#Modal").toggle();
         ToggleChat();
-        ModalSetDefault();
          //OnDisconnect();
     }, false);
 

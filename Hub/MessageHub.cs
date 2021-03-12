@@ -31,7 +31,6 @@ namespace TechnicalSupport
         }
 
 
-
         public async Task Send(Message message)
         {
             var dialog = _usersDialog
@@ -84,7 +83,6 @@ namespace TechnicalSupport
 
         }
 
-
         [Authorize(Roles = "EMPLOYEE")]
         public async Task SendAdmin (Message message)
         {
@@ -99,8 +97,7 @@ namespace TechnicalSupport
                 }
             }
         }
-
-       
+   
         public override async Task OnConnectedAsync()
         {
             
