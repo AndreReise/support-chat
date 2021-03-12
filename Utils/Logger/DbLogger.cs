@@ -85,6 +85,10 @@ namespace TechnicalSupport.Utils.Logger
 
             await File.AppendAllTextAsync(_path, logMessage);
 
+            if (e==null)
+            {
+                return;
+            }
             var log = new ErrorLog
             {
                 Code = e.HResult,
