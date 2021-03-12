@@ -49,7 +49,7 @@ namespace TechnicalSupport.Services
         }
 
 
-        private async Task JoinUserAsync(JoinModel model , string type)
+        private async Task<Guid> JoinUserAsync(JoinModel model , string type)
         {
 
             var localHash = _cryptoProvider.GetRandomSaltString();
@@ -57,34 +57,39 @@ namespace TechnicalSupport.Services
 
             User user = new User
             {
+                UserId = Guid.NewGuid(),
                 Email = model.Email,
                 Phone = model.Phone,
                 LocalHash = localHash,
                 PasswordHash = passwordHash,
                 LastName = model.LastName,
                 FirstName = model.FirstName,
-                RoleId = 1
+                RoleId = 1,
+                Role = _db.Roles.FirstOrDefault(x => x.Name == type.ToUpper())
             };
 
            var tt = user;
 
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
+
+            return user.UserId;
         }
 
 
         private async Task JoinClientAsync(JoinModel model)
         {
-
-            Client client = new Client
-            {
-                Age = model.Age,
-                UserIp = _contextAcessor.HttpContext.Connection.RemoteIpAddress.ToString()
-            };
-
             try
             {
-                await JoinUserAsync(model , nameof(Client));
+                Guid userGuid= await JoinUserAsync(model , nameof(Client));
+
+                Client client = new Client
+                {
+                    Age = model.Age,
+                    UserIp = _contextAcessor.HttpContext.Connection.RemoteIpAddress.ToString(),
+                    UserUserId = userGuid
+                };
+
                 _db.Clients.Add(client);
 
 
@@ -110,18 +115,19 @@ namespace TechnicalSupport.Services
             var localHash = _cryptoProvider.GetRandomSaltString();
             var passwordHash = _cryptoProvider.GetPasswordHash(model.PasswordString, localHash);
 
-            Employee employee = new Employee
-            {
-
-                Age = model.Age, 
-            };
-
             try
             {
-                _db.Employees.Add(employee);
-                await JoinUserAsync(model, nameof(Employee));
                 
+                Guid userGuid = await JoinUserAsync(model, nameof(Employee));
 
+                Employee employee = new Employee
+                {
+
+                    Age = model.Age,
+                    UserUserId = userGuid
+                 }; 
+                
+                _db.Employees.Add(employee);
                 await _db.SaveChangesAsync();
 
                 return true;

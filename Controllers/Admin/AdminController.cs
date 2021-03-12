@@ -54,16 +54,16 @@ namespace TechnicalSupport.Controllers.Admin
 
 
         [HttpGet]
-        public async Task<IActionResult> ChangeClient(Guid id)
+        public async Task<IActionResult> ChangeClient(int id)
         {
-            ViewBag.User = await _db.Users.SingleOrDefaultAsync(x => x.UserId == id);
+            ViewBag.Client = await _db.Clients.Include(x => x.User).SingleOrDefaultAsync(x => x.ClientId == id);
 
             return View("Views/Admin/Clients/ChangeClient.cshtml");
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ChangeClient(User client)
+        public async Task<IActionResult> ChangeClient(Client client)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace TechnicalSupport.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> ChangeEmployee(int id)
         {
-            ViewBag.Employee = await _db.Employees.SingleOrDefaultAsync(x => x.EmployeeId == id);
+            ViewBag.Employee = await _db.Employees.Include(x => x.User).SingleOrDefaultAsync(x => x.EmployeeId == id);
 
             return View("Views/Admin/Employees/ChangeEmployee.cshtml");
         }

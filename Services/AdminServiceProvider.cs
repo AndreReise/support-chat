@@ -33,26 +33,23 @@ namespace TechnicalSupport.Services
         }
 
 
-        public Task<bool> ChangeClientAsync(User _client)
+        public Task<bool> ChangeClientAsync(Client _client)
         {
 
             return Task.Run(() => ChangeClient(_client));
         }
 
 
-        private async Task<bool> ChangeClient(User _client)
+        private async Task<bool> ChangeClient(Client _client)
         {
 
-            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.UserId);
+            var client = await _db.Clients.Include( x => x.User).SingleOrDefaultAsync(x => x.ClientId == _client.ClientId);
 
             if (client == null) return false;
 
-            client.Email = _client.Email;
-            client.Phone = _client.Phone;
-
             try
             {
-                await ChangeUser(_client);
+                await ChangeUser(_client.User);
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -171,7 +168,7 @@ namespace TechnicalSupport.Services
         {
 
             //Filter unverified employees
-            var employees = _db.Employees.Where(x => x.Age != null);
+            var employees = _db.Employees.Include(x => x.User).Where(x => x.Age != null);
 
             return await employees.ToListAsync();
 
@@ -186,7 +183,7 @@ namespace TechnicalSupport.Services
         private async Task<List<Client>> GetClientList()
         {
 
-            var clients = _db.Clients.Where(x => x.Age != null);
+            var clients = _db.Clients.Include(x => x.User).Where(x => x.Age != null);
 
             return await clients.ToListAsync();
 

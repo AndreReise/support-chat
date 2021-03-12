@@ -11,7 +11,7 @@ namespace TechnicalSupport.Services
     {
         public Task<List<Client>> GetClientListAsync();
 
-        public Task<bool> ChangeClientAsync(User _client);
+        public Task<bool> ChangeClientAsync(Client _client);
 
         public Task<List<Employee>> GetEmployeeListAsync();
 
