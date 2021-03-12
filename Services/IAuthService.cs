@@ -12,11 +12,18 @@ namespace TechnicalSupport.Services
     public interface IAuthService
     {
 
-      
-       Task<AuthStatusResult> AuthenticateUserAsync(AuthModel model);
+        /// <summary>
+        /// Asynchronous method for cookie-based user authentication
+        /// </summary>
+        /// <param name="model">Model that includes user credentials</param>
+        /// <returns>AuthResult object which describe errors if there`re any</returns>
+        Task<AuthStatusResult> AuthenticateUserAsync(AuthModel model);
 
-
-       Task SignOutAsync();
+        /// <summary>
+        /// Asynchronous method that clear user`s auth cookie
+        /// </summary>
+        /// <returns></returns>
+        Task SignOutAsync();
 
     }
 }

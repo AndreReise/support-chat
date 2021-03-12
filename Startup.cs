@@ -19,6 +19,9 @@ using TechnicalSupport.Models;
 using TechnicalSupport.Services;
 using TechnicalSupport.Data;
 using TechnicalSupport.Middleware;
+using Microsoft.Extensions.Logging;
+using System.IO;
+using TechnicalSupport.Utils.Logger;
 
 namespace TechnicalSupport
 {
@@ -79,7 +82,8 @@ namespace TechnicalSupport
                 new AuthService(
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
-                    options.GetRequiredService<IHttpContextAccessor>()
+                    options.GetRequiredService<IHttpContextAccessor>(),
+                    options.GetRequiredService<ILogger<AuthService>>()
                     )
             );
 
@@ -88,7 +92,8 @@ namespace TechnicalSupport
                 new JoinService(
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
-                    options.GetRequiredService<IHttpContextAccessor>()
+                    options.GetRequiredService<IHttpContextAccessor>(),
+                    options.GetRequiredService<ILogger<JoinService>>()
                     )
             );
 
@@ -130,10 +135,14 @@ namespace TechnicalSupport
 
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILoggerFactory loggerFactory)
         {
+            //Logger setting up
+            var logFilePath = Configuration["LoggerSettings:LogFilePath"];
+            var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
 
-            //app.UseMiddleware<CultureMiddleware>();
+            loggerFactory.AddFile(logFilePath, dbConnectionString);
+            var logger = loggerFactory.CreateLogger("Logger");
 
 
             if (env.IsDevelopment())
@@ -143,7 +152,6 @@ namespace TechnicalSupport
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

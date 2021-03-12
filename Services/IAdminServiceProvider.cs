@@ -21,6 +21,9 @@ namespace TechnicalSupport.Services
 
         public Task<bool> CreateAdminAsync(JoinAdminModel model);
 
+        /// <summary>
+        /// Create specific number of tokens and write them both in file and db
+        /// </summary>
         public Task CreateTokensAsync();
 
     }

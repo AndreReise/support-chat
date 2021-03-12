@@ -11,6 +11,7 @@ using TechnicalSupport.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using support_chat.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace TechnicalSupport.Services
 {
@@ -21,14 +22,18 @@ namespace TechnicalSupport.Services
         private ChatContext _db;
         private readonly CryptoProvider _cryProvider;
         private readonly IHttpContextAccessor _contextAcessor;
+        private readonly ILogger _logger;
         private AuthStatusResult _authResult;
+        
 
 
-        public AuthService(ChatContext dbContext , ICryptoProvider cryptoProvider , IHttpContextAccessor contextAccessor)
+        public AuthService(ChatContext dbContext , ICryptoProvider cryptoProvider,
+            IHttpContextAccessor contextAccessor, ILogger<AuthService> logger)
         {
             _db = dbContext;
             _cryProvider = (CryptoProvider)cryptoProvider;
             _contextAcessor = contextAccessor;
+            _logger = logger;
             _authResult = new AuthStatusResult();
 
         }
@@ -79,6 +84,7 @@ namespace TechnicalSupport.Services
             var claimsPrincipal = new ClaimsPrincipal(u_id);
 
             await AuthenticationHttpContextExtensions.SignInAsync(_contextAcessor.HttpContext, claimsPrincipal);
+            _logger.LogInformation($"User email: {user.Email} has been authenticated");
 
             return _authResult;
         }
@@ -96,15 +102,12 @@ namespace TechnicalSupport.Services
             {
                 case 1:
                     return await CreateClientClaims(user);
-                    break;
                 case 2:
                     return await CreateEmployeeClaims(user);
-                    break;
                 case 3:
                     return await CreateAdminClaims(user);
                 default:
                     return null;
-                    break;
             }
         }
 
@@ -115,8 +118,8 @@ namespace TechnicalSupport.Services
 
             if(client == null)
             {
-                ///logic 
-                ///
+                _logger.LogWarning($"Not found entity in client table with email: {user.Email}");
+
                 return null;
             }
 
@@ -134,7 +137,7 @@ namespace TechnicalSupport.Services
 
             if(employee == null)
             {
-                //logic 
+                _logger.LogWarning($"Not found entity in employee table with email: {user.Email}");
 
                 return null;
             }
