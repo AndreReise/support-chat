@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,16 +19,17 @@ namespace TechnicalSupport.Controllers.Admin
         private readonly ChatContext _db;
         private readonly IJoinService _joinService;
         private readonly IAdminServiceProvider _adminService;
+        private readonly IHubContext<MessageHub> _hubContext;
 
         public AdminController(
             ChatContext context, IJoinService joinService,
-            IAdminServiceProvider adminService)
+            IAdminServiceProvider adminService , IHubContext<MessageHub> hubContext)
         {
 
             _db = context;
             _joinService = joinService;
             _adminService = adminService;
-
+            _hubContext = hubContext;
 
         }
 
@@ -160,9 +162,10 @@ namespace TechnicalSupport.Controllers.Admin
 
 
         [HttpGet]
-        public IActionResult Stats()
+        public async Task <IActionResult> Stats()
         {
-          
+            ViewData["ActiveUsers"] = "NOT EMPLEMENTED";
+            ViewData["ActiveOperators"] = await _adminService.GetActiveOperatorsAsync();
             return View("Views/Admin/Stats/Stats.cshtml");
         }
 

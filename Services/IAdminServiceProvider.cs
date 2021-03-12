@@ -44,5 +44,7 @@ namespace TechnicalSupport.Services
         /// </summary>
         /// <param name="id">Log id</param>
         public Task<ErrorLog> GetErrorLogAsync(int id);
+
+        public Task<int> GetActiveOperatorsAsync();
     }
 }
