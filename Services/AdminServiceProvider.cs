@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,20 +18,28 @@ namespace TechnicalSupport.Services
         private const int TRACE_COUNT = 1000;
         private const int ERROR_COUNT = 100;
 
+        //cache dictionary
+        private const string CLIENT_LIST = "CACHE_CLIENT_LIST";
+        private const string EMPLOYEE_LIST = "EMPLOYEE_CLIENT_LIST";
+        private const string ERROR_LOG = "ERROR_LOGS";
+
+
         private readonly ChatContext _db;
         private readonly ChatServiceContext _serviceDb;
         private readonly ICryptoProvider _cryptoProvider;
         private readonly IJoinService _joinService;
+        private readonly IMemoryCache _cache;
 
 
         public AdminServiceProvider(ChatContext context, ChatServiceContext serviceDb,
-            ICryptoProvider cryptoProvider , IJoinService joinService)
+            ICryptoProvider cryptoProvider , IJoinService joinService , IMemoryCache cache)
         {
 
             _db = context;
             _serviceDb = serviceDb;
             _cryptoProvider = cryptoProvider;
             _joinService = joinService;
+            _cache = cache;
 
         }
 
@@ -168,11 +177,24 @@ namespace TechnicalSupport.Services
 
         private async Task<List<Employee>> GetEmployeeList()
         {
+            List<Employee> employeeList;
 
-            //Filter unverified employees
-            var employees = _db.Employees.Include(x => x.User).Where(x => x.Age != null);
+            if(!_cache.TryGetValue(EMPLOYEE_LIST , out employeeList))
+            {
+                //Filter unverified employees
+                var employees = _db.Employees.Include(x => x.User).Where(x => x.Age != null);
 
-            return await employees.ToListAsync();
+                if (employees != null)
+                {
+                    employeeList = await employees.ToListAsync();
+
+                    _cache.Set(
+                        EMPLOYEE_LIST, employeeList,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                }
+            }
+            
+            return employeeList;
 
         }
 
@@ -184,11 +206,25 @@ namespace TechnicalSupport.Services
 
         private async Task<List<Client>> GetClientList()
         {
+            List<Client> clientList;
 
-            var clients = _db.Clients.Include(x => x.User).Where(x => x.Age != null);
+            if(!_cache.TryGetValue(CLIENT_LIST , out clientList))
+            {
+                var clients = _db.Clients.Include(x => x.User).Where(x => x.Age != null);
 
-            return await clients.ToListAsync();
+                if (clients != null)
+                {
+                    clientList = await clients.ToListAsync();
 
+                    _cache.Set(
+                        CLIENT_LIST, clientList,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1)));
+                }
+            }
+            
+
+
+            return clientList;
         }
 
 
@@ -261,10 +297,19 @@ namespace TechnicalSupport.Services
 
         public List<ErrorLog> GetErrorLogs()
         {
-            return _serviceDb.TechnicalLogs
+            List<ErrorLog> errorLogList;
+            if(!_cache.TryGetValue(ERROR_LOG , out errorLogList))
+            {
+                errorLogList = _serviceDb.TechnicalLogs
                 .OrderBy(x => x.Time)
                 .AsEnumerable()
                 .TakeLast(ERROR_COUNT).ToList();
+
+                _cache.Set(ERROR_LOG, errorLogList,
+                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1)));
+            }
+
+            return errorLogList;
         }
 
 
