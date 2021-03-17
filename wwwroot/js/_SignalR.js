@@ -8,66 +8,71 @@ const hubConnection = new signalR.HubConnectionBuilder()
     .build();
 
 hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10; // 1 second * 60 * 10 = 10 minutes.
-let userName = "UserDefault";
+
+let userName = "123";
 let message = { name: userName };
 
-// получение сообщения от сервера
-hubConnection.on("Receive", function (mes) {
+// get new message from server
+hubConnection.on("Receive", function (message) {
 
-    message.dialogid = mes.dialogid;
+    message.dialogid = message.dialogid;
 
-    let servmessage = document.createElement("div");
-    //console.dir(mes)
-    if (mes.senderType == "in") {
+    let newMessage = document.createElement("div");
+  
+    if (message.senderType == "in") {
 
-        servmessage.className = "chat first";
-        //addMessage(mes, 'first', mes.name, elem);
+        newMessage.className = "chat first";
     }
     else {
 
-        servmessage.className = "chat second";
-        //addMessage(mes, 'second', mes.name, elem.outerHTML);
+        newMessage.className = "chat second";
     }
-    servmessage.appendChild(document.createTextNode('Name:' + mes.name));
-    // создает элемент <p> для сообщения пользователя
-    let elem = document.createElement("p");
-    var t = "";
-        if (mes.textTupe == "json") {
+    newMessage.appendChild(document.createTextNode('Name:' + message.name));
 
-        jsontext = JSON.parse(mes.text);
-        elem.appendChild(document.createTextNode(jsontext.text));
-        servmessage.appendChild(elem);
-        if (jsontext.buttoncount > 0) {
-            var index;
-            for (index = 0; index < jsontext.textbutton.length; ++index) {
-                var button = document.createElement("button");
-                button.innerHTML = jsontext.textbutton[index];
-                button.classList.add("btn-interract");
-                button.classList.add("btn");
-                button.classList.add("btn-primary");
+    // creates <p> element for user`s message
+    let messageText = document.createElement("p");
 
-                servmessage.appendChild(button);
-                elem.appendChild(button);
-                button.onclick = UserButtonInterracts;
+        if (message.textTupe == "json") {
 
-                var br = document.createElement("br");
-                servmessage.appendChild(br);
-            } 
+            jsontext = JSON.parse(message.text);
 
+            messageText.appendChild(document.createTextNode(jsontext.text));
+            newMessage.appendChild(messageText);
+
+            if (jsontext.buttoncount > 0) {
+
+                for (let i = 0; i < jsontext.textbutton.length; i++) {
+
+                    var button = document.createElement("button");
+
+                    button.innerHTML = jsontext.textbutton[i];
+                    button.classList.add("btn-interract");
+                    button.classList.add("btn");
+                    button.classList.add("btn-primary");
+
+                    newMessage.appendChild(button);
+                    messageText.appendChild(button);
+                    button.onclick = UserButtonInterracts;
+
+                    newMessage.appendChild(document.createElement("br"));
+                } 
+
+            }
+            var str = "              <span class=\"time\"><\/span>";
+            messageText.insertAdjacentHTML('beforeend', str);
         }
-        var str = "              <span class=\"time\">" + new Date().toLocaleString() + "<\/span>";
-        elem.insertAdjacentHTML('beforeend', str);
-    }
-    else {
-        elem.appendChild(document.createTextNode(mes.text));
-        var str = "              <span class=\"time\">" + new Date().toLocaleString() + "<\/span>";
-        elem.insertAdjacentHTML('beforeend', str);
-        servmessage.appendChild(elem);
-    }
+        else
+        {
+            messageText.appendChild(document.createTextNode(message.text));
+            var str = "              <span class=\"time\"><\/span>";
+            messageText.insertAdjacentHTML('beforeend', str);
+            newMessage.appendChild(messageText);
+        }
 
  
 
     var firstElem = document.getElementById("chat-messages").firstChild;
-    document.getElementById("chat-messages").insertBefore(servmessage, firstElem);
+    document.getElementById("chat-messages").insertBefore(newMessage, firstElem);
 });
+
 hubConnection.start();

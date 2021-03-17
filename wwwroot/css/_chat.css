@@ -11,7 +11,7 @@
     position: fixed;
     right: 2rem;
     bottom: 2rem;
-    background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS-E7M-Lk-v1WX_HR_p6kHtYfFKI8w9prMXw&usqp=CAU) left top no-repeat,url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSINQdRaYhwo5kPHTD4Kk6TkSv6zahUW-yccg&usqp=CAU) left bottom repeat;
+    background-color : gray;
     background-size: 100%;
     z-index: 1000;
 }
