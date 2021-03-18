@@ -114,7 +114,7 @@ namespace TechnicalSupport
 
                             if (user.Role.Name == "EMPLOYEE")
                             {
-                             _context.Employees.FirstOrDefault(f => f.UserUserId == user.UserId).StatusOnline = true;
+                             _context.Employees.FirstOrDefault(f => f.UserGuid == user.UserGuid).StatusOnline = true;
                             }
                             else
                             {
@@ -178,7 +178,7 @@ namespace TechnicalSupport
         {
 
                 User user = await _context.Users.Include(i=>i.Role)
-                .FirstOrDefaultAsync(u => u.UserId == Guid.Parse(Context.UserIdentifier));
+                .FirstOrDefaultAsync(u => u.UserGuid == Guid.Parse(Context.UserIdentifier));
 
                 var dialog = _context.Dialogs
                 .FirstOrDefault(f=>f.ClientUserUserId == Guid.Parse(Context.UserIdentifier)
@@ -201,7 +201,7 @@ namespace TechnicalSupport
              
                 if (user != null && user.Role.Name == "EMPLOYEE")
                 {
-                _context.Employees.FirstOrDefault(f => f.UserUserId == user.UserId).StatusOnline = false;
+                _context.Employees.FirstOrDefault(f => f.UserGuid == user.UserGuid).StatusOnline = false;
                 }
 
             _context.SaveChanges();

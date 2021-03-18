@@ -114,7 +114,7 @@ namespace TechnicalSupport.Services
 
         private async Task<List<Claim>> CreateClientClaims(User user)
         {
-            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserId == user.UserId);
+            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserGuid == user.UserGuid);
 
             if(client == null)
             {
@@ -133,7 +133,8 @@ namespace TechnicalSupport.Services
         }
         private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            var employee = await _db.Employees.Include(u=>u.User).SingleOrDefaultAsync(x => x.UserUserId == user.UserId);
+            var employee = await _db.Employees.Include(u=>u.User)
+                .SingleOrDefaultAsync(x => x.UserGuid == user.UserGuid);
 
             if(employee == null)
             {

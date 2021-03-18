@@ -57,7 +57,7 @@ namespace TechnicalSupport.Services
 
             User user = new User
             {
-                UserId = Guid.NewGuid(),
+                UserGuid = Guid.NewGuid(),
                 Email = model.Email,
                 Phone = model.Phone,
                 LocalHash = localHash,
@@ -72,7 +72,7 @@ namespace TechnicalSupport.Services
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
 
-            return user.UserId;
+            return user.UserGuid;
         }
 
 
@@ -86,7 +86,8 @@ namespace TechnicalSupport.Services
                 {
                     Age = model.Age,
                     UserIp = _contextAcessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    UserUserId = userGuid
+                    UserGuid = userGuid,
+                    User = _db.Users.SingleOrDefault(x => x.Email == model.Email)
                 };
 
                 _db.Clients.Add(client);
@@ -123,7 +124,8 @@ namespace TechnicalSupport.Services
                 {
 
                     Age = model.Age,
-                    UserUserId = userGuid
+                    UserGuid = userGuid,
+                    User = _db.Users.SingleOrDefault(x => x.Email == model.Email)
                  }; 
                 
                 _db.Employees.Add(employee);

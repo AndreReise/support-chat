@@ -8,7 +8,9 @@ namespace TechnicalSupport.Models
 {
     public class User
     { 
-        public Guid UserId { get; set; }
+        [Key]
+        public int UserId { get; set; }
+        public Guid UserGuid { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }

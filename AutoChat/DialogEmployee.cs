@@ -22,7 +22,7 @@ namespace TechnicalSupport.AutoChat
             if (emp != null)
             {
                 Dialog thisDialog = _context.Dialogs.Where(w => w.DialogId == mes.DialogId).FirstOrDefault();
-                thisDialog.EmployeeUserUserId = emp.UserUserId;
+                thisDialog.EmployeeUserUserId = emp.UserGuid;
                 _context.SaveChanges();
                 mes.Text = $"Перемикаю на оператора {emp.User.FirstName}";
             }

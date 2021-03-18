@@ -111,7 +111,7 @@ namespace TechnicalSupport.Services
 
         private async Task<bool> ChangeUser(User _client)
         {
-            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _client.UserId);
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserGuid == _client.UserGuid);
 
             if (user == null) return false;
 
@@ -133,7 +133,7 @@ namespace TechnicalSupport.Services
 
         private async Task<bool> ChangeUser(Employee _employee)
         {
-            var user  = await _db.Users.SingleOrDefaultAsync(x => x.UserId == _employee.UserUserId);
+            var user  = await _db.Users.SingleOrDefaultAsync(x => x.UserGuid == _employee.UserGuid);
 
             if (user == null) return false;
 

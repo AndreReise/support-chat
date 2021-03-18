@@ -9,6 +9,7 @@ namespace TechnicalSupport.Models
 {
     public partial class Employee
     {
+        [Key]
         public int EmployeeId { get; set; }
         public bool StatusOnline { get; set; }
         public int? Age { get; set; }
@@ -16,7 +17,7 @@ namespace TechnicalSupport.Models
         [AllowNull]
         public virtual WorkTime WorkTime { get; set; }
       
-        public Guid UserUserId { get; set; }
+        public Guid UserGuid { get; set; }
         public User User { get; set; }
     }
 }
