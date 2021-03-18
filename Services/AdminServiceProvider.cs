@@ -9,6 +9,7 @@ using TechnicalSupport.Data;
 using TechnicalSupport.Models;
 using TechnicalSupport.Models.ServiceModels;
 using TechnicalSupport.Utils;
+using TechnicalSupport.Utils.Cache;
 
 namespace TechnicalSupport.Services
 {
@@ -18,10 +19,10 @@ namespace TechnicalSupport.Services
         private const int TRACE_COUNT = 1000;
         private const int ERROR_COUNT = 100;
 
-        //cache dictionary
-        private const string CLIENT_LIST = "CACHE_CLIENT_LIST";
-        private const string EMPLOYEE_LIST = "EMPLOYEE_CLIENT_LIST";
-        private const string ERROR_LOG = "ERROR_LOGS";
+        //cache constants
+        private const int CLIENT_REFRESH_TIME = 1;
+        private const int EMPLOYEE_REFRESH_TIME = 5;
+        private const int LOG_REFRESH_TIME = 30;
 
 
         private readonly ChatContext _db;
@@ -165,7 +166,11 @@ namespace TechnicalSupport.Services
             if (await _joinService.canJoin((JoinModel)model) == false)
                 return false;
 
-            return await _joinService.JoinEmployee(model);
+            var employee = await _joinService.JoinEmployee(model);
+
+            UpdateCache(CacheEntityType.Employee);
+
+            return employee != null;
         }
 
 
@@ -179,7 +184,7 @@ namespace TechnicalSupport.Services
         {
             List<Employee> employeeList;
 
-            if(!_cache.TryGetValue(EMPLOYEE_LIST , out employeeList))
+            if(!_cache.TryGetValue(CacheEntityType.Employee, out employeeList))
             {
                 //Filter unverified employees
                 var employees = _db.Employees.Include(x => x.User).Where(x => x.Age != null);
@@ -189,7 +194,7 @@ namespace TechnicalSupport.Services
                     employeeList = await employees.ToListAsync();
 
                     _cache.Set(
-                        EMPLOYEE_LIST, employeeList,
+                        CacheEntityType.Employee, employeeList,
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
                 }
             }
@@ -208,7 +213,7 @@ namespace TechnicalSupport.Services
         {
             List<Client> clientList;
 
-            if(!_cache.TryGetValue(CLIENT_LIST , out clientList))
+            if(!_cache.TryGetValue(CacheEntityType.Client , out clientList))
             {
                 var clients = _db.Clients.Include(x => x.User).Where(x => x.Age != null);
 
@@ -217,7 +222,7 @@ namespace TechnicalSupport.Services
                     clientList = await clients.ToListAsync();
 
                     _cache.Set(
-                        CLIENT_LIST, clientList,
+                        CacheEntityType.Client, clientList,
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1)));
                 }
             }
@@ -298,14 +303,14 @@ namespace TechnicalSupport.Services
         public List<ErrorLog> GetErrorLogs()
         {
             List<ErrorLog> errorLogList;
-            if(!_cache.TryGetValue(ERROR_LOG , out errorLogList))
+            if(!_cache.TryGetValue(CacheEntityType.Logs, out errorLogList))
             {
                 errorLogList = _serviceDb.TechnicalLogs
                 .OrderBy(x => x.Time)
                 .AsEnumerable()
                 .TakeLast(ERROR_COUNT).ToList();
 
-                _cache.Set(ERROR_LOG, errorLogList,
+                _cache.Set(CacheEntityType.Logs, errorLogList,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1)));
             }
 
@@ -340,6 +345,27 @@ namespace TechnicalSupport.Services
         private async Task<int> GetActiveOperators()
         {
             return await _db.Employees.Where(x => x.StatusOnline == true).CountAsync();
+        }
+
+        private async void UpdateCache(string cacheEntityName)
+        {
+            switch (cacheEntityName)
+            {
+                case CacheEntityType.Employee :
+
+                    var employees = await _db.Employees.ToListAsync();
+                    _cache.Remove(CacheEntityType.Employee);
+                    _cache.Set(CacheEntityType.Employee, employees ,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration( TimeSpan.FromMinutes( EMPLOYEE_REFRESH_TIME )) );
+
+                    break;
+
+                case CacheEntityType.Client :
+                    var clients = await _db.Clients.ToListAsync();
+                    _cache.Set(CacheEntityType.Client, clients,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration( TimeSpan.FromMinutes( CLIENT_REFRESH_TIME )) );
+                    break;
+            }
         }
     }
 }
