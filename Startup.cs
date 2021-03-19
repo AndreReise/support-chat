@@ -56,7 +56,6 @@ namespace TechnicalSupport
                 );
 
 
-
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>(sp=>
             {
                 using (var scope = sp.CreateScope())
@@ -142,7 +141,7 @@ namespace TechnicalSupport
         {
             //Logger setting up
             var logFilePath = Configuration["LoggerSettings:LogFilePath"];
-            var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
+            var dbConnectionString = Configuration["ConnectionStrings:ServiceDbConnection"];
 
             loggerFactory.AddFile(logFilePath, dbConnectionString);
             var logger = loggerFactory.CreateLogger("Logger");

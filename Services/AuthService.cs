@@ -126,7 +126,8 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , client.FirstName + client.LastName),
-                new Claim(ClaimTypes.Role , nameof(client).ToUpper())
+                new Claim(ClaimTypes.Email , user.Email),
+                new Claim(ClaimTypes.Role , Roles.Client)
             };
 
             return claims;
@@ -146,7 +147,8 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , employee.User.FirstName + employee.User.LastName),
-                new Claim(ClaimTypes.Role , nameof(employee).ToUpper())
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role , Roles.Employee)
             };
 
             return claims;
@@ -158,7 +160,8 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , user.Email),
-                new Claim(ClaimTypes.Role , "ADMIN")
+                new Claim(ClaimTypes.Email , user.Email),
+                new Claim(ClaimTypes.Role , Roles.Admin)
             };
 
             return claims;
