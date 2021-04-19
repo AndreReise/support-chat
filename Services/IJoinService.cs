@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TechnicalSupport.Models;
 using TechnicalSupport.Utils;
 
 namespace TechnicalSupport.Services
@@ -18,13 +19,13 @@ namespace TechnicalSupport.Services
         /// <summary>
         /// Register a new client
         /// </summary>
-        public Task JoinClient(JoinModel model);
+        public Task<Client> JoinClient(JoinModel model);
 
         /// <summary>
         /// Register a new employee.
         /// Requires admin access to process.
         /// </summary>
-        public Task<bool> JoinEmployee(JoinEmployeeModel model);
+        public Task<Employee> JoinEmployee(JoinEmployeeModel model);
 
         /// <summary>
         /// Register a new admin.

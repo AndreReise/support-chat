@@ -16,6 +16,7 @@
 </head>
 <body>
     <header>
+        <input value="@Context.User.Identity.Name" type="hidden" id="context-username"/>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TechnicalSupport</a>
@@ -45,7 +46,18 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            <button onclick="ToggleChat()" id="ChatOpenButton" title="Open Chat"> <i class="fa fa-comments"></i></button>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button onclick="ToggleChat()" id="ChatOpenButton" title="Open Chat"> <i class="fa fa-comments"></i></button>
+            }
+            else
+            {
+                <form asp-controller="Account" asp-action="Index">
+                    
+                    <button type="submit" id="ChatOpenButton" title="Open Chat"><i class="fa fa-comments"></i></button>
+                </form>
+            }
+
         </main>
     </div>
     <div class="container">

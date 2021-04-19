@@ -22,6 +22,7 @@ using TechnicalSupport.Middleware;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using TechnicalSupport.Utils.Logger;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace TechnicalSupport
 {
@@ -38,12 +39,13 @@ namespace TechnicalSupport
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddMemoryCache();
 
-            string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True;";
-            string serviceConnection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_service_db;Integrated Security=True;";
+            //string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_db;Integrated Security=True;";
+            //string serviceConnection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=chat_service_db;Integrated Security=True;";
 
-            // string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
-            // string serviceConnection = @"Data Source=.;Initial Catalog=chat_service_db;Integrated Security=True";
+            string connection = @"Data Source=.;Initial Catalog=chat_db;Integrated Security=True";
+            string serviceConnection = @"Data Source=.;Initial Catalog=chat_service_db;Integrated Security=True";
 
             services.AddDbContext<ChatContext>(options => options.UseSqlServer(connection),
                  ServiceLifetime.Singleton
@@ -52,7 +54,6 @@ namespace TechnicalSupport
             services.AddDbContext<ChatServiceContext>(options => options.UseSqlServer(serviceConnection),
                 ServiceLifetime.Singleton
                 );
-
 
 
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>(sp=>
@@ -103,7 +104,8 @@ namespace TechnicalSupport
                     options.GetRequiredService<ChatContext>(),
                     options.GetRequiredService<ChatServiceContext>(),
                     options.GetRequiredService<ICryptoProvider>(),
-                    options.GetRequiredService<IJoinService>()
+                    options.GetRequiredService<IJoinService>(),
+                    options.GetRequiredService<IMemoryCache>()
                     )
 
             );
@@ -139,7 +141,7 @@ namespace TechnicalSupport
         {
             //Logger setting up
             var logFilePath = Configuration["LoggerSettings:LogFilePath"];
-            var dbConnectionString = Configuration["DbConnectionStrings:ServiceDb"];
+            var dbConnectionString = Configuration["ConnectionStrings:ServiceDbConnection"];
 
             loggerFactory.AddFile(logFilePath, dbConnectionString);
             var logger = loggerFactory.CreateLogger("Logger");

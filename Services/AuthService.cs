@@ -114,7 +114,7 @@ namespace TechnicalSupport.Services
 
         private async Task<List<Claim>> CreateClientClaims(User user)
         {
-            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserId == user.UserId);
+            var client = await _db.Users.SingleOrDefaultAsync(x => x.UserGuid == user.UserGuid);
 
             if(client == null)
             {
@@ -126,14 +126,16 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , client.FirstName + client.LastName),
-                new Claim(ClaimTypes.Role , nameof(client).ToUpper())
+                new Claim(ClaimTypes.Email , user.Email),
+                new Claim(ClaimTypes.Role , Roles.Client)
             };
 
             return claims;
         }
         private async Task<List<Claim>> CreateEmployeeClaims(User user)
         {
-            var employee = await _db.Employees.Include(u=>u.User).SingleOrDefaultAsync(x => x.UserUserId == user.UserId);
+            var employee = await _db.Employees.Include(u=>u.User)
+                .SingleOrDefaultAsync(x => x.UserGuid == user.UserGuid);
 
             if(employee == null)
             {
@@ -145,7 +147,8 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , employee.User.FirstName + employee.User.LastName),
-                new Claim(ClaimTypes.Role , nameof(employee).ToUpper())
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role , Roles.Employee)
             };
 
             return claims;
@@ -157,7 +160,8 @@ namespace TechnicalSupport.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType , user.Email),
-                new Claim(ClaimTypes.Role , "ADMIN")
+                new Claim(ClaimTypes.Email , user.Email),
+                new Claim(ClaimTypes.Role , Roles.Admin)
             };
 
             return claims;

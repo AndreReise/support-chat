@@ -33,7 +33,7 @@ namespace TechnicalSupport.Models
 
             if (connection.User?.Identity.Name != null && usersDictionar.ContainsKey(connection.User.Identity.Name))
             {
-                return usersDictionar[connection.User.Identity.Name].UserId.ToString();  
+                return usersDictionar[connection.User.Identity.Name].UserGuid.ToString();  
             }
             else return Guid.NewGuid().ToString();
           

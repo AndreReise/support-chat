@@ -526,3 +526,15 @@ Error Number:4060,State:1,Class:11
 12.03.2021 16:02:47  Hosting environment: Development
 12.03.2021 16:02:47  Content root path: C:\Users\Vv\Documents\sourceTree\Support-chat
 12.03.2021 16:04:19  User email: admin1@mail.com has been authenticated
+3/16/2021 2:22:43 PM  Application started. Press Ctrl+C to shut down.
+3/16/2021 2:22:43 PM  Hosting environment: Development
+3/16/2021 2:22:43 PM  Content root path: E:\repos\AndreReise\support-chat
+3/16/2021 2:23:31 PM  Application started. Press Ctrl+C to shut down.
+3/16/2021 2:23:31 PM  Hosting environment: Development
+3/16/2021 2:23:31 PM  Content root path: E:\repos\AndreReise\support-chat
+3/16/2021 2:24:32 PM  Application started. Press Ctrl+C to shut down.
+3/16/2021 2:24:32 PM  Hosting environment: Development
+3/16/2021 2:24:32 PM  Content root path: E:\repos\AndreReise\support-chat
+3/16/2021 2:46:32 PM  Application started. Press Ctrl+C to shut down.
+3/16/2021 2:46:33 PM  Hosting environment: Development
+3/16/2021 2:46:33 PM  Content root path: E:\repos\AndreReise\support-chat

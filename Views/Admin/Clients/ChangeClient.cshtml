@@ -10,7 +10,7 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ClientId" value="@ViewBag.Client.ClientId"/>
-            <input type ="hidden" asp-for="User.UserId" value="@ViewBag.Client.User.UserId">
+            <input type ="hidden" asp-for="User.UserGuid" value="@ViewBag.Client.User.UserId">
             <div class="form-group">
                 <label asp-for="User.FirstName" class="control-label"></label>
                 <input asp-for="User.FirstName" value="@ViewBag.Client.User.FirstName" class="form-control" />

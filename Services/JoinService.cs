@@ -43,7 +43,7 @@ namespace TechnicalSupport.Services
         }
 
 
-        public Task JoinClient(JoinModel model)
+        public Task<Client> JoinClient(JoinModel model)
         {
             return Task.Run(() => JoinClientAsync(model));
         }
@@ -57,7 +57,7 @@ namespace TechnicalSupport.Services
 
             User user = new User
             {
-                UserId = Guid.NewGuid(),
+                UserGuid = Guid.NewGuid(),
                 Email = model.Email,
                 Phone = model.Phone,
                 LocalHash = localHash,
@@ -72,21 +72,22 @@ namespace TechnicalSupport.Services
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
 
-            return user.UserId;
+            return user.UserGuid;
         }
 
 
-        private async Task JoinClientAsync(JoinModel model)
+        private async Task<Client> JoinClientAsync(JoinModel model)
         {
             try
             {
-                Guid userGuid= await JoinUserAsync(model , nameof(Client));
+                Guid userGuid= await JoinUserAsync(model , Roles.Client);
 
                 Client client = new Client
                 {
                     Age = model.Age,
                     UserIp = _contextAcessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    UserUserId = userGuid
+                    UserGuid = userGuid,
+                    User = _db.Users.SingleOrDefault(x => x.Email == model.Email)
                 };
 
                 _db.Clients.Add(client);
@@ -95,20 +96,25 @@ namespace TechnicalSupport.Services
                 await _db.SaveChangesAsync();
                 _logger.LogInformation($"Client email {client.User.Email} has been joined");
 
-            }catch(DbUpdateException e)
+                return client;
+            }
+            catch(DbUpdateException e)
             {
                 _logger.LogError(e.HResult, (Exception)e, e.Message);
+
+                //returns empty client enity
+                return new Client();
             }
             
         }
 
-        public Task<bool> JoinEmployee(JoinEmployeeModel model)
+        public Task<Employee> JoinEmployee(JoinEmployeeModel model)
         {
             return Task.Run(() => JoinEmployeeAsync(model));
         }
 
 
-        private async Task<bool> JoinEmployeeAsync(JoinEmployeeModel model)
+        private async Task<Employee> JoinEmployeeAsync(JoinEmployeeModel model)
         {
 
             var localHash = _cryptoProvider.GetRandomSaltString();
@@ -117,24 +123,27 @@ namespace TechnicalSupport.Services
             try
             {
                 
-                Guid userGuid = await JoinUserAsync(model, nameof(Employee));
+                Guid userGuid = await JoinUserAsync(model, Roles.Employee);
 
                 Employee employee = new Employee
                 {
 
                     Age = model.Age,
-                    UserUserId = userGuid
+                    UserGuid = userGuid,
+                    User = _db.Users.SingleOrDefault(x => x.Email == model.Email)
                  }; 
                 
                 _db.Employees.Add(employee);
                 await _db.SaveChangesAsync();
 
-                return true;
+                return employee;
 
             }catch(DbUpdateException e)
             {
                 _logger.LogError(e.HResult, (Exception)e, e.Message);
-                return false;
+
+                //returns empty employee entity
+                return new Employee();
             }
 
         }
@@ -152,7 +161,7 @@ namespace TechnicalSupport.Services
 
             try
             {
-                await JoinUserAsync(model, "ADMIN");
+                await JoinUserAsync(model, Roles.Admin);
 
                 return true;
             }
